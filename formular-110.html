@@ -67,7 +67,7 @@
     </form>
   </div>
 
-  <script>
+  <script type="module">
     // Bezpečně načtený config (předpoklad: proměnné v externím souboru nebo přes Vercel)
     const firebaseConfig = JSON.parse(atob(import.meta.env?.VITE_FIREBASE_CONFIG || window.FIREBASE_CONFIG));
 
@@ -110,6 +110,6 @@
         alert('Chyba při odesílání formuláře. Zkuste to prosím znovu.');
       }
     }
-  </script>
+  </script type="module">
 </body>
 </html>
