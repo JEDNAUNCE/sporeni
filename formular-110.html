@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formulář k registraci | 1/10 oz Spoření</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #fff8dc; color: #333; }
+    .container { max-width: 800px; margin: auto; padding: 30px 20px; }
+    h1 { text-align: center; color: #bfa440; margin-bottom: 30px; }
+    form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    label { display: block; margin: 10px 0 5px; }
+    input[type="text"], input[type="email"], input[type="date"], input[type="tel"], input[type="password"] {
+      width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;
+    }
+    .checkbox-group { margin-top: 15px; }
+    .checkbox-group label { display: inline; }
+    .submit-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #bfa440;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+  <!-- Firebase App & Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Registrace – 1/10 oz Spoření</h1>
+    <form id="registration-form" onsubmit="handleSubmit(event)">
+      <label for="jmeno">Jméno</label>
+      <input type="text" id="jmeno" name="jmeno" required>
+
+      <label for="prijmeni">Příjmení</label>
+      <input type="text" id="prijmeni" name="prijmeni" required>
+
+      <label for="narozeni">Datum narození</label>
+      <input type="date" id="narozeni" name="narozeni" required>
+
+      <label for="adresa">Adresa</label>
+      <input type="text" id="adresa" name="adresa" required>
+
+      <label for="email">E-mail (přihlašovací jméno)</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="telefon">Telefon</label>
+      <input type="tel" id="telefon" name="telefon" required>
+
+      <label for="heslo">Zvolte si heslo</label>
+      <input type="password" id="heslo" name="heslo" required>
+
+      <label for="potvrzeni">Potvrďte heslo</label>
+      <input type="password" id="potvrzeni" name="potvrzeni" required>
+
+      <div class="checkbox-group">
+        <label><input type="checkbox" required> Souhlasím s obchodními podmínkami a zpracováním osobních údajů (GDPR).</label>
+      </div>
+
+      <button type="submit" class="submit-btn">Odeslat registraci</button>
+    </form>
+  </div>
+
+  <script>
+    // Firebase konfigurace
+    const firebaseConfig = {
+      apiKey: "AIzaSyD5whCNeWCPn0ISrINExHgRs0n7sRex014",
+      authDomain: "jednauncesporeni.firebaseapp.com",
+      projectId: "jednauncesporeni",
+      storageBucket: "jednauncesporeni.appspot.com",
+      messagingSenderId: "875462528900",
+      appId: "1:875462528900:web:a3caabd94b8fcf1eca17d1",
+      measurementId: "G-FYV22B81MX"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+
+      const jmeno = document.getElementById('jmeno').value;
+      const prijmeni = document.getElementById('prijmeni').value;
+      const narozeni = document.getElementById('narozeni').value;
+      const adresa = document.getElementById('adresa').value;
+      const email = document.getElementById('email').value;
+      const telefon = document.getElementById('telefon').value;
+      const heslo = document.getElementById('heslo').value;
+      const potvrzeni = document.getElementById('potvrzeni').value;
+
+      if (heslo !== potvrzeni) {
+        alert('Hesla se neshodují. Zkontrolujte je prosím.');
+        return;
+      }
+
+      try {
+        await db.collection("registrace_110").add({
+          jmeno,
+          prijmeni,
+          narozeni,
+          adresa,
+          email,
+          telefon,
+          heslo, // POZOR – pro produkční verzi doporučuji heslo hashovat!
+          createdAt: new Date().toISOString()
+        });
+
+        alert('Registrace byla úspěšně dokončena. Můžete přejít do přehledu svého spoření.');
+        window.location.href = 'prehled.html';
+      } catch (error) {
+        console.error("Chyba při ukládání do Firestore:", error);
+        alert('Chyba při odesílání formuláře. Zkuste to prosím znovu.');
+      }
+    }
+  </script>
+</body>
+</html>
