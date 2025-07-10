@@ -54,22 +54,14 @@
 <body>
   <h2>Registrace – 1/10 oz Spoření</h2>
   <form id="registrationForm">
-    <label>Jméno</label>
-    <input type="text" name="jmeno" required />
-    <label>Příjmení</label>
-    <input type="text" name="prijmeni" required />
-    <label>Datum narození</label>
-    <input type="date" name="narozeni" required />
-    <label>Adresa</label>
-    <input type="text" name="adresa" required />
-    <label>E-mail (přihlašovací jméno)</label>
-    <input type="email" name="email" required />
-    <label>Telefon</label>
-    <input type="tel" name="telefon" required />
-    <label>Zvolte si heslo</label>
-    <input type="password" name="heslo" required />
-    <label>Potvrďte heslo</label>
-    <input type="password" name="potvrzeni" required />
+    <label>Jméno <input type="text" name="jmeno" required></label>
+    <label>Příjmení <input type="text" name="prijmeni" required></label>
+    <label>Datum narození <input type="date" name="narozeni" required></label>
+    <label>Adresa <input type="text" name="adresa" required></label>
+    <label>E-mail (přihlašovací jméno) <input type="email" name="email" required></label>
+    <label>Telefon <input type="tel" name="telefon" required></label>
+    <label>Zvolte si heslo <input type="password" name="heslo" required></label>
+    <label>Potvrďte heslo <input type="password" name="potvrzeni" required></label>
     <label>
       <input type="checkbox" name="souhlas" required />
       Souhlasím s obchodními podmínkami a zpracováním osobních údajů (GDPR).
@@ -78,7 +70,7 @@
   </form>
 
   <script>
-    // Firebase config
+    // Inicializace Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyD5whCNeWCPn0ISrINExHgRs0n7sRex014",
       authDomain: "jednauncesporeni.firebaseapp.com",
@@ -89,14 +81,36 @@
       measurementId: "G-FYV22B81MX"
     };
 
-    // Init
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    async function odeslatDoSmartEmailing(data) {
+      try {
+        await fetch("https://app.smartemailing.cz/api/v3/contacts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer meqfr2tnehshomwkwr7ivonoig7bp43uv7k7iys5"
+          },
+          body: JSON.stringify({
+            emailaddress: data.email,
+            name: data.jmeno + " " + data.prijmeni,
+            customfields: {
+              telefon: data.telefon
+            },
+            groups: [18]
+          })
+        });
+        console.log("Kontakt odeslán do SmartEmailingu");
+      } catch (err) {
+        console.error("Chyba při odesílání do SmartEmailingu:", err);
+      }
+    }
+
     document.getElementById("registrationForm").addEventListener("submit", async function (e) {
       e.preventDefault();
-
       const form = e.target;
+
       const data = {
         jmeno: form.jmeno.value.trim(),
         prijmeni: form.prijmeni.value.trim(),
@@ -104,11 +118,10 @@
         adresa: form.adresa.value.trim(),
         email: form.email.value.trim(),
         telefon: form.telefon.value.trim(),
-        heslo: form.heslo.value,
+        heslo: form.heslo.value, // Pozor: veřejně neukládat v ostrém provozu
         createdAt: new Date().toISOString()
       };
 
-      // Kontrola hesla
       if (form.heslo.value !== form.potvrzeni.value) {
         alert("Hesla se neshodují.");
         return;
@@ -116,15 +129,17 @@
 
       try {
         await db.collection("savings").add(data);
+        await odeslatDoSmartEmailing(data);
         alert("Registrace proběhla úspěšně.");
         window.location.href = "prehled.html";
       } catch (error) {
-        console.error("Chyba při odesílání:", error);
-        alert("Něco se nepovedlo. Zkuste to prosím znovu.");
+        console.error("Chyba při registraci:", error);
+        alert("Nepodařilo se odeslat formulář.");
       }
     });
   </script>
 </body>
 </html>
+
 
 
