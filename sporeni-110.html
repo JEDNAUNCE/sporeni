@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1/10 oz Philharmoniker | Spoření</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; background: #fffaf5; color: #333; }
+    .container { max-width: 800px; margin: auto; padding: 30px 20px; }
+    h1 { text-align: center; color: #bfa440; }
+    .img-wrap { text-align: center; margin: 20px 0; }
+    .img-wrap img { max-width: 200px; }
+    .description { font-size: 1.1rem; line-height: 1.6; margin: 20px 0; }
+    .price { font-size: 1.2rem; font-weight: bold; margin: 10px 0; }
+    .installments { margin: 30px 0; border-top: 1px solid #ccc; padding-top: 20px; }
+    .installments table { width: 100%; border-collapse: collapse; }
+    .installments th, .installments td { padding: 8px; border-bottom: 1px solid #ddd; text-align: left; }
+    .note { font-size: 0.9rem; color: #666; margin-top: 20px; font-style: italic; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>1/10 oz Wiener Philharmoniker</h1>
+    <div class="img-wrap">
+      <img src="image/110.png" alt="1/10 oz mince">
+    </div>
+    <div class="description">
+      Spořte postupně do jedné z nejdostupnějších a zároveň nejuznávanějších investičních zlatých mincí světa. Vysoká likvidita, přesné parametry a celosvětové přijetí z ní dělají ideální volbu pro drobné i pravidelné investory.
+    </div>
+    <div class="price" id="price">Načítám aktuální cenu...</div>
+
+    <div class="installments">
+      <h2>Splátkový plán (měsíční spoření 750 Kč)</h2>
+      <table id="splátky">
+        <thead>
+          <tr><th>Splátka č.</th><th>Částka</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="note">
+      *Cena se mění podle aktuální situace na trhu. Výpočet je orientační.
+    </div>
+  </div>
+
+  <script>
+    const API_KEY = "b4624e90e64e5987961acbc6195aa63e";
+    const monthly = 750;
+
+    async function fetchGoldPrice() {
+      try {
+        const res = await fetch(`https://api.metalpriceapi.com/v1/latest?base=XAU&currencies=CZK&apikey=${API_KEY}`);
+        const data = await res.json();
+        const cenaOz = data.rates.CZK;
+        const cenaDesetina = Math.round(cenaOz / 10);
+        document.getElementById("price").innerText = `Aktuální cena: ${cenaDesetina.toLocaleString('cs-CZ')} Kč`;
+
+        // Výpočet splátek
+        let zbývá = cenaDesetina;
+        let splátky = [];
+        let i = 1;
+        while (zbývá > monthly) {
+          splátky.push({ splátka: i, částka: monthly });
+          zbývá -= monthly;
+          i++;
+        }
+        if (zbývá > 0) {
+          splátky.push({ splátka: i, částka: zbývá });
+        }
+
+        const tbody = document.querySelector("#splátky tbody");
+        tbody.innerHTML = "";
+        splátky.forEach(s => {
+          const row = document.createElement("tr");
+          row.innerHTML = `<td>${s.splátka}</td><td>${s.částka.toLocaleString('cs-CZ')} Kč</td>`;
+          tbody.appendChild(row);
+        });
+
+      } catch (e) {
+        document.getElementById("price").innerText = "Nepodařilo se načíst aktuální cenu.";
+        console.error("Chyba při načítání API:", e);
+      }
+    }
+
+    fetchGoldPrice();
+  </script>
+</body>
+</html>
