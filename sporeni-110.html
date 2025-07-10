@@ -5,14 +5,6 @@
   <meta charset="UTF-8">
   <title>1/10 oz Wiener Philharmoniker</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #fef1e6;
-      color: #333;
-      padding: 20px;
-      max-width: 800px;
-      margin: auto;
-    }
     h1 {
       color: #c59d5f;
       text-align: center;
@@ -48,7 +40,7 @@
 <body>
   <h1>1/10 oz Wiener Philharmoniker</h1>
   <img src="image/110.png" alt="1/10 oz mince">
-  <p>Spořte postupně do jedné z nejdostupnějších a zároveň nejuznávanějších investičních zlatých mincí světa. Vysoká likvidita, přesné parametry a celosvětové přijetí z ní dělají ideální volbu pro drobné i pravidelné investory.</p>
+  <p style="text-align: center;">Spořte postupně do jedné z nejdostupnějších a zároveň nejuznávanějších investičních zlatých mincí světa. Vysoká likvidita, přesné parametry a celosvětové přijetí z ní dělají ideální volbu pro drobné i pravidelné investory.</p>
 
   <div class="price-box">
     <strong>Cena:</strong> <span id="current-price">Načítání...</span>
@@ -69,7 +61,10 @@
         const usdToCzk = data.rates.CZK;
         const xauRate = data.rates.XAU;
         const goldPriceCzk = (1 / xauRate) * usdToCzk;
-        const oneTenthOuncePrice = goldPriceCzk / 10;
+
+        // Přirážka 19 %
+        const premium = 1.19;
+        const oneTenthOuncePrice = (goldPriceCzk / 10) * premium;
 
         document.getElementById('current-price').innerText = oneTenthOuncePrice.toFixed(2).replace('.', ',') + " Kč";
 
@@ -96,3 +91,4 @@
   </script>
 </body>
 </html>
+
