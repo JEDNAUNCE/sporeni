@@ -86,20 +86,12 @@
 
     async function odeslatDoSmartEmailing(data) {
       try {
-        await fetch("https://app.smartemailing.cz/api/v3/contacts", {
+        await fetch("https://sporeni.jednaunce.cz/api/smartemailing.php", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer pq0l2gxzfzxgqos3cs67eqxka0ef45hdzkvlrdd9"
+            "Content-Type": "application/json"
           },
-          body: JSON.stringify({
-            emailaddress: data.email,
-            name: data.jmeno + " " + data.prijmeni,
-            customfields: {
-              telefon: data.telefon
-            },
-            groups: [18]
-          })
+          body: JSON.stringify(data)
         });
         console.log("Kontakt odeslán do SmartEmailingu");
       } catch (err) {
@@ -118,7 +110,7 @@
         adresa: form.adresa.value.trim(),
         email: form.email.value.trim(),
         telefon: form.telefon.value.trim(),
-        heslo: form.heslo.value, // Pozor: veřejně neukládat v ostrém provozu
+        heslo: form.heslo.value, // POZOR: v produkci zahashovat!
         createdAt: new Date().toISOString()
       };
 
@@ -140,6 +132,7 @@
   </script>
 </body>
 </html>
+
 
 
 
