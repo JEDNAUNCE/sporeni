@@ -31,16 +31,15 @@ export default async function handler(req, res) {
     });
 
     const result = await response.json();
+    console.log("Odpověď SmartEmailing API:", result); // přidej pro debug
 
     if (!response.ok) {
-      console.error("SmartEmailing API error:", result);
       return res.status(response.status).json(result);
     }
 
-    res.status(200).json({ success: true, message: "Kontakt úspěšně přidán", result });
+    return res.status(200).json({ success: true, result });
   } catch (error) {
     console.error("Server error:", error);
-    res.status(500).json({ error: "Chyba na serveru" });
+    return res.status(500).json({ error: "Chyba na serveru" });
   }
 }
-
