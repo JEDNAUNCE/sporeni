@@ -84,20 +84,20 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    async function odeslatDoSmartEmailing(data) {
-      try {
-        await fetch("https://sporeni.jednaunce.cz/api/smartemailing.php", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(data)
-        });
-        console.log("Kontakt odeslán do SmartEmailingu");
-      } catch (err) {
-        console.error("Chyba při odesílání do SmartEmailingu:", err);
-      }
-    }
+async function odeslatDoSmartEmailing(data) {
+  try {
+    await fetch("https://sporeni.jednaunce.cz/api/smartemailing.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
+    console.log("Kontakt odeslán do SmartEmailingu");
+  } catch (err) {
+    console.error("Chyba při odesílání do SmartEmailingu:", err);
+  }
+}
 
     document.getElementById("registrationForm").addEventListener("submit", async function (e) {
       e.preventDefault();
