@@ -86,13 +86,14 @@
 
 async function odeslatDoSmartEmailing(data) {
   try {
-    await fetch("https://sporeni.jednaunce.cz/api/smartemailing.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
-    });
+    await fetch("/api/smartemailing", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(data)
+});
+
     console.log("Kontakt odeslán do SmartEmailingu");
   } catch (err) {
     console.error("Chyba při odesílání do SmartEmailingu:", err);
