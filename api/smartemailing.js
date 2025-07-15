@@ -21,10 +21,10 @@ export default async function handler(req, res) {
   const payload = {
     emailaddress: email,
     name: `${jmeno} ${prijmeni}`,
-    customFields: {
-      telefon: telefon,
-      projekt: "sporeni"
-    },
+customFields: {
+  telefon,
+  cf_13: 'sporeni'
+},
     force_subscribe: true
   };
 
