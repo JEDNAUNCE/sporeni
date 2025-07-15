@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     force_subscribe: true
   };
 
-  console.log("📤 Odesílám kontakt do SmartEmailingu:", payload);
+  console.log("📤 Odesílám do SmartEmailingu:", payload);
 
   try {
     const response = await fetch('https://app.smartemailing.cz/api/v3/contacts', {
@@ -50,7 +50,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ success: true, result });
   } catch (error) {
-    console.error("❌ Chyba serveru:", error);
+    console.error("❌ Server error:", error);
     return res.status(500).json({ error: "Chyba na serveru" });
   }
 }
