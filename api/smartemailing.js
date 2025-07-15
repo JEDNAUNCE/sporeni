@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Chybí některé povinné údaje' });
   }
 
-  const username = 'obchod@jednaunce.cz';
+  const username = 'obchod@jednaunce.cz'; // Změň na jiný e-mail, pokud používáš jiný
   const token = process.env.SMARTEMAILING_TOKEN;
 
   if (!token) {
@@ -23,53 +23,35 @@ export default async function handler(req, res) {
     emailaddress: email,
     name: `${jmeno} ${prijmeni}`,
     customFields: { telefon },
-    group_ids: [19]
+    groups: [19]
   });
 
   try {
-    // 1. Vytvoření nebo aktualizace kontaktu
-    const createRes = await fetch('https://app.smartemailing.cz/api/v3/contacts', {
+    const response = await fetch('https://app.smartemailing.cz/api/v3/contacts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Basic ${credentials}`
       },
-      body: JSON.stringify({
-        emailaddress: email,
-        name: `${jmeno} ${prijmeni}`,
-        customFields: { telefon },
-        force_subscribe: true
-      })
+body: JSON.stringify({
+  emailaddress: email,
+  name: `${jmeno} ${prijmeni}`,
+  customFields: {
+    telefon
+  },
+  groups: [19],
+  force_subscribe: true
+})
     });
 
-    const createResult = await createRes.json();
-    console.log("✅ Odpověď SmartEmailing API (vytvoření):", createResult);
+    const result = await response.json();
+    console.log("✅ Odpověď SmartEmailing API:", result);
 
-    if (!createRes.ok) {
-      return res.status(createRes.status).json(createResult);
+    if (!response.ok) {
+      return res.status(response.status).json(result);
     }
 
-    // 2. Přidání kontaktu do skupiny pomocí e-mailu
-    const groupRes = await fetch('https://app.smartemailing.cz/api/v3/contact-groups', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Basic ${credentials}`
-      },
-      body: JSON.stringify({
-        emailaddress: email,
-        group_ids: [19]
-      })
-    });
-
-    const groupResult = await groupRes.json();
-    console.log("📥 Odpověď SmartEmailing API (přiřazení do skupiny):", groupResult);
-
-    if (!groupRes.ok) {
-      return res.status(groupRes.status).json(groupResult);
-    }
-
-    return res.status(200).json({ success: true, result: groupResult });
+    return res.status(200).json({ success: true, result });
   } catch (error) {
     console.error("❌ Server error:", error);
     return res.status(500).json({ error: "Chyba na serveru" });
