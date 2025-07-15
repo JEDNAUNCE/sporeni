@@ -33,14 +33,15 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
         'Authorization': `Basic ${credentials}`
       },
-      body: JSON.stringify({
-        emailaddress: email,
-        name: `${jmeno} ${prijmeni}`,
-        customFields: {
-          telefon
-        },
-        groups: [18]
-      })
+body: JSON.stringify({
+  emailaddress: email,
+  name: `${jmeno} ${prijmeni}`,
+  customFields: {
+    telefon
+  },
+  groups: [19],
+  force_subscribe: true
+})
     });
 
     const result = await response.json();
