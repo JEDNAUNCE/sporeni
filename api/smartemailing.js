@@ -31,7 +31,10 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         emailaddress: email,
         name: `${jmeno} ${prijmeni}`,
-        customFields: { telefon },
+        customFields: {
+          telefon,
+          projekt: "sporeni"
+        },
         force_subscribe: true
       })
     });
@@ -43,7 +46,7 @@ export default async function handler(req, res) {
       return res.status(createRes.status).json(createResult);
     }
 
-    // 2. přidání do skupiny pomocí správného endpointu
+    // 2. přidání do skupiny pomocí emailu
     const groupRes = await fetch('https://app.smartemailing.cz/api/v3/contacts/groups', {
       method: 'POST',
       headers: {
