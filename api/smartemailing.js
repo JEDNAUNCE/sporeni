@@ -21,9 +21,10 @@ export default async function handler(req, res) {
 const payload = {
   emailaddress: email,
   name: `${jmeno} ${prijmeni}`,
-  custom_field_values: {
-    telefon: telefon,
-    cf_13: "sporeni"
+"custom_fields_map": {
+  "telefon": "123456789",
+  "cf_13": "sporeni"
+}
   },
   force_subscribe: true
 };
