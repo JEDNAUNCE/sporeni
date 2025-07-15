@@ -6,14 +6,14 @@ export default async function handler(req, res) {
   const { jmeno, prijmeni, email, telefon } = req.body;
 
   if (!jmeno || !prijmeni || !email || !telefon) {
-    return res.status(400).json({ error: 'Chyb� n�kter� povinn� �daje' });
+    return res.status(400).json({ error: 'Chybí některé povinné údaje' });
   }
 
   const username = 'obchod@jednaunce.cz';
   const token = process.env.SMARTEMAILING_TOKEN;
 
   if (!token) {
-    return res.status(500).json({ error: 'Chyb� API token v prost�ed�' });
+    return res.status(500).json({ error: 'Chybí API token v prostředí' });
   }
 
   const credentials = Buffer.from(`${username}:${token}`).toString('base64');
@@ -21,14 +21,14 @@ export default async function handler(req, res) {
   const payload = {
     emailaddress: email,
     name: `${jmeno} ${prijmeni}`,
-customFields: {
-  telefon,
-  cf_13: 'sporeni'
-},
+    customFields: {
+      telefon: telefon,
+      cf_13: "sporeni" // ← Zde použij ID vlastního pole pro 'projekt'
+    },
     force_subscribe: true
   };
 
-  console.log('🚀 Odes�l�m do SmartEmailingu:', payload);
+  console.log('🚀 Odesílám do SmartEmailingu:', payload);
 
   try {
     const response = await fetch('https://app.smartemailing.cz/api/v3/contacts', {
@@ -41,7 +41,7 @@ customFields: {
     });
 
     const result = await response.json();
-    console.log('✅ Odpov�� SmartEmailing API:', result);
+    console.log('✅ Odpověď SmartEmailing API:', result);
 
     if (!response.ok) {
       return res.status(response.status).json(result);
