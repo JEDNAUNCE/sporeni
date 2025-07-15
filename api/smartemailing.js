@@ -22,9 +22,7 @@ export default async function handler(req, res) {
     emailaddress: email,
     name: `${jmeno} ${prijmeni}`,
     custom_field_values: {
-      cf_13: 'sporeni' // ⬅️ ID vlastního pole „projekt“, typ text → string, ne pole!
-      // Pokud máš vlastní pole na telefon (např. cf_17), můžeš přidat:
-      // cf_17: telefon
+      cf_13: 'sporeni' 
     },
     force_subscribe: true
   };
