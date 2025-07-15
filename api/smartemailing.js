@@ -18,14 +18,15 @@ export default async function handler(req, res) {
 
   const credentials = Buffer.from(`${username}:${token}`).toString('base64');
 
-  const payload = {
-    emailaddress: email,
-    name: `${jmeno} ${prijmeni}`,
-    custom_field_values: {
-      cf_13: 'sporeni' 
-    },
-    force_subscribe: true
-  };
+const payload = {
+  emailaddress: email,
+  name: `${jmeno} ${prijmeni}`,
+  customfield_values: {
+    cf_13: "sporeni", // Opraveno
+    cf_10: telefon    // Pokud máš 'telefon' jako vlastní pole s ID 10
+  },
+  force_subscribe: true
+};
 
   console.log('🚀 Odesílám do SmartEmailingu:', payload);
 
