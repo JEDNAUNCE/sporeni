@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Chybí některé povinné údaje' });
   }
 
-  const username = 'obchod@jednaunce.cz'; // Změň na jiný e-mail, pokud používáš jiný
+  const username = 'obchod@jednaunce.cz';
   const token = process.env.SMARTEMAILING_TOKEN;
 
   if (!token) {
@@ -18,40 +18,61 @@ export default async function handler(req, res) {
 
   const credentials = Buffer.from(`${username}:${token}`).toString('base64');
 
-  console.log("🔥 BASE64 Credentials:", credentials);
-  console.log("📩 DATA POSÍLÁNA DO:", {
+  console.log("📤 ODESÍLÁM KONTAKT DO SE API:", {
     emailaddress: email,
     name: `${jmeno} ${prijmeni}`,
     customFields: { telefon },
-    groups: [19]
+    force_subscribe: true
   });
 
   try {
-    const response = await fetch('https://app.smartemailing.cz/api/v3/contacts', {
+    // 1. vytvoření / aktualizace kontaktu
+    const createRes = await fetch('https://app.smartemailing.cz/api/v3/contacts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Basic ${credentials}`
       },
-body: JSON.stringify({
-  emailaddress: email,
-  name: `${jmeno} ${prijmeni}`,
-  customFields: {
-    telefon
-  },
-  groups: [19],
-  force_subscribe: true
-})
+      body: JSON.stringify({
+        emailaddress: email,
+        name: `${jmeno} ${prijmeni}`,
+        customFields: { telefon },
+        force_subscribe: true
+      })
     });
 
-    const result = await response.json();
-    console.log("✅ Odpověď SmartEmailing API:", result);
+    const createResult = await createRes.json();
+    console.log("✅ Výsledek vytvoření kontaktu:", createResult);
 
-    if (!response.ok) {
-      return res.status(response.status).json(result);
+    if (!createRes.ok) {
+      return res.status(createRes.status).json(createResult);
     }
 
-    return res.status(200).json({ success: true, result });
+    const contactId = createResult?.contacts_map?.[0]?.contact_id;
+    if (!contactId) {
+      return res.status(500).json({ error: "Kontakt byl vytvořen, ale ID chybí." });
+    }
+
+    // 2. přiřazení kontaktu do skupiny 19
+    const groupRes = await fetch(`https://app.smartemailing.cz/api/v3/contacts/${contactId}/groups`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${credentials}`
+      },
+      body: JSON.stringify({
+        group_ids: [19]
+      })
+    });
+
+    const groupResult = await groupRes.json();
+    console.log("📥 Výsledek přiřazení do skupiny:", groupResult);
+
+    if (!groupRes.ok) {
+      return res.status(groupRes.status).json(groupResult);
+    }
+
+    return res.status(200).json({ success: true, contactId, groupResult });
   } catch (error) {
     console.error("❌ Server error:", error);
     return res.status(500).json({ error: "Chyba na serveru" });
