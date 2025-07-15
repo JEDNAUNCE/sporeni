@@ -18,15 +18,16 @@ export default async function handler(req, res) {
 
   const credentials = Buffer.from(`${username}:${token}`).toString('base64');
 
-  console.log("📤 ODESÍLÁM KONTAKT DO SE API:", {
+  console.log("🔥 BASE64 Credentials:", credentials);
+  console.log("📩 DATA POSÍLÁNA DO:", {
     emailaddress: email,
     name: `${jmeno} ${prijmeni}`,
     customFields: { telefon },
-    force_subscribe: true
+    group_ids: [19]
   });
 
   try {
-    // 1. vytvoření nebo aktualizace kontaktu
+    // 1. Vytvoření nebo aktualizace kontaktu
     const createRes = await fetch('https://app.smartemailing.cz/api/v3/contacts', {
       method: 'POST',
       headers: {
@@ -42,13 +43,13 @@ export default async function handler(req, res) {
     });
 
     const createResult = await createRes.json();
-    console.log("✅ Výsledek vytvoření kontaktu:", createResult);
+    console.log("✅ Odpověď SmartEmailing API (vytvoření):", createResult);
 
     if (!createRes.ok) {
       return res.status(createRes.status).json(createResult);
     }
 
-    // 2. přidání kontaktu do skupiny pomocí e-mailu
+    // 2. Přidání kontaktu do skupiny pomocí e-mailu
     const groupRes = await fetch('https://app.smartemailing.cz/api/v3/contact-groups', {
       method: 'POST',
       headers: {
@@ -62,7 +63,7 @@ export default async function handler(req, res) {
     });
 
     const groupResult = await groupRes.json();
-    console.log("📥 Výsledek přiřazení do skupiny:", groupResult);
+    console.log("📥 Odpověď SmartEmailing API (přiřazení do skupiny):", groupResult);
 
     if (!groupRes.ok) {
       return res.status(groupRes.status).json(groupResult);
