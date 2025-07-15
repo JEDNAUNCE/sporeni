@@ -48,44 +48,24 @@ export default async function handler(req, res) {
       return res.status(createRes.status).json(createResult);
     }
 
-    // 2. Získáme contact_id nebo fallbackujeme na email
-    const contactId = createResult?.contacts_map?.[0]?.contact_id;
+    // 2. přidání kontaktu do skupiny pomocí e-mailu
+    const groupRes = await fetch('https://app.smartemailing.cz/api/v3/contact-groups', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${credentials}`
+      },
+      body: JSON.stringify({
+        emailaddress: email,
+        group_ids: [19]
+      })
+    });
 
-    let groupResponse;
-    if (contactId) {
-      // 2a. přidání do skupiny podle contact_id
-      groupResponse = await fetch(`https://app.smartemailing.cz/api/v3/contacts/${contactId}/groups`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Basic ${credentials}`
-        },
-        body: JSON.stringify({
-          group_ids: [19]
-        })
-      });
-    } else {
-      console.warn("⚠️ contact_id není dostupné, fallback na email");
-
-      // 2b. fallback – přidání do skupiny podle e-mailu
-      groupResponse = await fetch(`https://app.smartemailing.cz/api/v3/contact-groups`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Basic ${credentials}`
-        },
-        body: JSON.stringify({
-          emailaddress: email,
-          group_ids: [19]
-        })
-      });
-    }
-
-    const groupResult = await groupResponse.json();
+    const groupResult = await groupRes.json();
     console.log("📥 Výsledek přiřazení do skupiny:", groupResult);
 
-    if (!groupResponse.ok) {
-      return res.status(groupResponse.status).json(groupResult);
+    if (!groupRes.ok) {
+      return res.status(groupRes.status).json(groupResult);
     }
 
     return res.status(200).json({ success: true, result: groupResult });
