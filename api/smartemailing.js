@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     name: `${jmeno} ${prijmeni}`,
     custom_field_values: {
       telefon: telefon,
-      cf_13: "sporeni" // ← Zde použij ID vlastního pole pro 'projekt'
+      cf_13: "projekt" // ← Zde použij ID vlastního pole pro 'projekt'
     },
     force_subscribe: true
   };
