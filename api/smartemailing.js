@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   const payload = {
     emailaddress: email,
     name: `${jmeno} ${prijmeni}`,
-    customFields: {
+    custom_field_values: {
       telefon: telefon,
       cf_13: "sporeni" // ← Zde použij ID vlastního pole pro 'projekt'
     },
