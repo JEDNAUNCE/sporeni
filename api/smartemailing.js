@@ -9,7 +9,16 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Chybí některé povinné údaje' });
   }
 
-  console.log("🔥 TOKEN:", process.env.SMARTEMAILING_TOKEN); // DEBUG: výpis tokenu
+  const username = 'obchod@jednaunce.cz'; // Změň na jiný e-mail, pokud používáš jiný
+  const token = process.env.SMARTEMAILING_TOKEN;
+
+  if (!token) {
+    return res.status(500).json({ error: 'Chybí API token v prostředí' });
+  }
+
+  const credentials = Buffer.from(`${username}:${token}`).toString('base64');
+
+  console.log("🔥 BASE64 Credentials:", credentials);
   console.log("📩 DATA POSÍLÁNA DO:", {
     emailaddress: email,
     name: `${jmeno} ${prijmeni}`,
@@ -17,16 +26,12 @@ export default async function handler(req, res) {
     groups: [18]
   });
 
-  if (!process.env.SMARTEMAILING_TOKEN) {
-    return res.status(500).json({ error: 'Chybí API token v prostředí' });
-  }
-
   try {
     const response = await fetch('https://app.smartemailing.cz/api/v3/contacts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.SMARTEMAILING_TOKEN}`
+        'Authorization': `Basic ${credentials}`
       },
       body: JSON.stringify({
         emailaddress: email,
@@ -39,7 +44,7 @@ export default async function handler(req, res) {
     });
 
     const result = await response.json();
-    console.log("✅ Odpověď SmartEmailing API:", result); // DEBUG: odpověď z API
+    console.log("✅ Odpověď SmartEmailing API:", result);
 
     if (!response.ok) {
       return res.status(response.status).json(result);
