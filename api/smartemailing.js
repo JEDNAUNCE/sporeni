@@ -26,7 +26,7 @@ export default async function handler(req, res) {
   });
 
   try {
-    // 1. vytvoření / aktualizace kontaktu
+    // 1. vytvoření nebo aktualizace kontaktu
     const createRes = await fetch('https://app.smartemailing.cz/api/v3/contacts', {
       method: 'POST',
       headers: {
@@ -48,31 +48,47 @@ export default async function handler(req, res) {
       return res.status(createRes.status).json(createResult);
     }
 
+    // 2. Získáme contact_id nebo fallbackujeme na email
     const contactId = createResult?.contacts_map?.[0]?.contact_id;
-    if (!contactId) {
-      return res.status(500).json({ error: "Kontakt byl vytvořen, ale ID chybí." });
+
+    let groupResponse;
+    if (contactId) {
+      // 2a. přidání do skupiny podle contact_id
+      groupResponse = await fetch(`https://app.smartemailing.cz/api/v3/contacts/${contactId}/groups`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Basic ${credentials}`
+        },
+        body: JSON.stringify({
+          group_ids: [19]
+        })
+      });
+    } else {
+      console.warn("⚠️ contact_id není dostupné, fallback na email");
+
+      // 2b. fallback – přidání do skupiny podle e-mailu
+      groupResponse = await fetch(`https://app.smartemailing.cz/api/v3/contact-groups`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Basic ${credentials}`
+        },
+        body: JSON.stringify({
+          emailaddress: email,
+          group_ids: [19]
+        })
+      });
     }
 
-    // 2. přiřazení kontaktu do skupiny 19
-    const groupRes = await fetch(`https://app.smartemailing.cz/api/v3/contacts/${contactId}/groups`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Basic ${credentials}`
-      },
-      body: JSON.stringify({
-        group_ids: [19]
-      })
-    });
-
-    const groupResult = await groupRes.json();
+    const groupResult = await groupResponse.json();
     console.log("📥 Výsledek přiřazení do skupiny:", groupResult);
 
-    if (!groupRes.ok) {
-      return res.status(groupRes.status).json(groupResult);
+    if (!groupResponse.ok) {
+      return res.status(groupResponse.status).json(groupResult);
     }
 
-    return res.status(200).json({ success: true, contactId, groupResult });
+    return res.status(200).json({ success: true, result: groupResult });
   } catch (error) {
     console.error("❌ Server error:", error);
     return res.status(500).json({ error: "Chyba na serveru" });
