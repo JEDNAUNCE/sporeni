@@ -9,6 +9,14 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Chybí některé povinné údaje' });
   }
 
+  console.log("🔥 TOKEN:", process.env.SMARTEMAILING_TOKEN); // DEBUG: výpis tokenu
+  console.log("📩 DATA POSÍLÁNA DO:", {
+    emailaddress: email,
+    name: `${jmeno} ${prijmeni}`,
+    customFields: { telefon },
+    groups: [18]
+  });
+
   if (!process.env.SMARTEMAILING_TOKEN) {
     return res.status(500).json({ error: 'Chybí API token v prostředí' });
   }
@@ -23,15 +31,15 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         emailaddress: email,
         name: `${jmeno} ${prijmeni}`,
-        customfields: {
-          telefon: telefon
+        customFields: {
+          telefon
         },
         groups: [18]
       })
     });
 
     const result = await response.json();
-    console.log("Odpověď SmartEmailing API:", result); // přidej pro debug
+    console.log("✅ Odpověď SmartEmailing API:", result); // DEBUG: odpověď z API
 
     if (!response.ok) {
       return res.status(response.status).json(result);
@@ -39,7 +47,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ success: true, result });
   } catch (error) {
-    console.error("Server error:", error);
+    console.error("❌ Server error:", error);
     return res.status(500).json({ error: "Chyba na serveru" });
   }
 }
