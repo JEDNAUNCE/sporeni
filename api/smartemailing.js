@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     emailaddress: email,
     name: `${jmeno} ${prijmeni}`,
     customFields: { telefon },
-    groups: [18]
+    groups: [19]
   });
 
   try {
