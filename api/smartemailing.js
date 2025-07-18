@@ -18,15 +18,16 @@ export default async function handler(req, res) {
 
   const credentials = Buffer.from(`${username}:${token}`).toString('base64');
 
-const payload = {
-  emailaddress: email,
-  name: `${jmeno} ${prijmeni}`,
-  customfield_values: {
-    cf_13: "sporeni", // Opraveno
-    cf_10: telefon    // Pokud máš 'telefon' jako vlastní pole s ID 10
-  },
-  force_subscribe: true
-};
+  const payload = {
+    emailaddress: email,
+    name: `${jmeno} ${prijmeni}`,
+    customfield_values: {
+      13: "sporeni",   // ID pole projekt
+      // Pokud máš pro telefon extra pole, např. ID 10, můžeš přidat: 10: telefon
+      // Pokud telefon není vlastní pole, vynech nebo použij základní parametr, pokud existuje
+    },
+    force_subscribe: true
+  };
 
   console.log('🚀 Odesílám do SmartEmailingu:', payload);
 
@@ -53,4 +54,5 @@ const payload = {
     return res.status(500).json({ error: 'Chyba na serveru' });
   }
 }
+
 
