@@ -9,47 +9,13 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #fff3d6;
-      margin: 0;
-      padding: 40px;
-    }
-    h2 {
-      text-align: center;
-      color: #a37900;
-    }
-    form {
-      max-width: 500px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    input, label {
-      display: block;
-      width: 100%;
-      margin-bottom: 15px;
-      font-size: 14px;
-    }
-    input {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      padding: 10px;
-      background-color: #d6b656;
-      border: none;
-      border-radius: 4px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #b49b45;
-    }
+    body { font-family: Arial, sans-serif; background: #fff3d6; margin: 0; padding: 40px; }
+    h2 { text-align: center; color: #a37900; }
+    form { max-width: 500px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); }
+    input, label { display: block; width: 100%; margin-bottom: 15px; font-size: 14px; }
+    input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+    button { padding: 10px; background-color: #d6b656; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; }
+    button:hover { background-color: #b49b45; }
   </style>
 </head>
 <body>
@@ -64,10 +30,7 @@
     <label>Zvolte si heslo <input type="password" name="heslo" required></label>
     <label>Potvrďte heslo <input type="password" name="potvrzeni" required></label>
     <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
-    <label>
-      <input type="checkbox" name="souhlas" required />
-      Souhlasím s obchodními podmínkami a zpracováním osobních údajů (GDPR).
-    </label>
+    <label><input type="checkbox" name="souhlas" required /> Souhlasím s obchodními podmínkami a zpracováním osobních údajů (GDPR).</label>
     <button type="submit">Odeslat registraci</button>
   </form>
 
@@ -85,6 +48,17 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth();
+
+    async function generateUniqueVS() {
+      let vs;
+      let exists = true;
+      while (exists) {
+        vs = Math.floor(100000 + Math.random() * 900000).toString();
+        const query = await db.collection("sporeni").where("variabilniSymbol", "==", vs).get();
+        exists = !query.empty;
+      }
+      return vs;
+    }
 
     async function odeslatDoSmartEmailing(data) {
       const minimalData = {
@@ -121,6 +95,8 @@
         return;
       }
 
+      const variabilniSymbol = await generateUniqueVS();
+
       const data = {
         jmeno: form.jmeno.value.trim(),
         prijmeni: form.prijmeni.value.trim(),
@@ -132,7 +108,8 @@
         zalozeno: firebase.firestore.Timestamp.fromDate(new Date()),
         poznamka: "Platby provádějte vždy se stejným variabilním symbolem.",
         produktId: "110",
-        splatky: []
+        splatky: [],
+        variabilniSymbol: variabilniSymbol
       };
 
       try {
@@ -142,7 +119,8 @@
         await db.collection("sporeni").doc(uid).set(data);
         await odeslatDoSmartEmailing(data);
 
-        alert("Registrace proběhla úspěšně.");
+        alert("Registrace proběhla úspěšně. Váš variabilní symbol je: " + variabilniSymbol);
+        await auth.signOut();
         window.location.href = "https://sporeni.jednaunce.cz/prehled.html";
       } catch (error) {
         console.error("Chyba při registraci:", error);
@@ -152,6 +130,7 @@
   </script>
 </body>
 </html>
+
 
 
 
