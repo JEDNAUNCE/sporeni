@@ -6,6 +6,8 @@
   <title>Registrace – 1/10 oz Spoření</title>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -61,6 +63,7 @@
     <label>Telefon <input type="tel" name="telefon" required></label>
     <label>Zvolte si heslo <input type="password" name="heslo" required></label>
     <label>Potvrďte heslo <input type="password" name="potvrzeni" required></label>
+    <div class="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
     <label>
       <input type="checkbox" name="souhlas" required />
       Souhlasím s obchodními podmínkami a zpracováním osobních údajů (GDPR).
@@ -69,7 +72,6 @@
   </form>
 
   <script>
-    // Inicializace Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyD5whCNeWCPn0ISrINExHgRs0n7sRex014",
       authDomain: "jednauncesporeni.firebaseapp.com",
@@ -82,6 +84,7 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const auth = firebase.auth();
 
     async function odeslatDoSmartEmailing(data) {
       const minimalData = {
@@ -94,12 +97,9 @@
       try {
         await fetch("/api/smartemailing", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(minimalData)
         });
-
         console.log("Kontakt odeslán do SmartEmailingu");
       } catch (err) {
         console.error("Chyba při odesílání do SmartEmailingu:", err);
@@ -110,6 +110,17 @@
       e.preventDefault();
       const form = e.target;
 
+      if (form.heslo.value !== form.potvrzeni.value) {
+        alert("Hesla se neshodují.");
+        return;
+      }
+
+      const token = grecaptcha.getResponse();
+      if (!token) {
+        alert("Potvrďte prosím, že nejste robot.");
+        return;
+      }
+
       const data = {
         jmeno: form.jmeno.value.trim(),
         prijmeni: form.prijmeni.value.trim(),
@@ -118,22 +129,24 @@
         email: form.email.value.trim(),
         telefon: form.telefon.value.trim(),
         heslo: form.heslo.value,
-        createdAt: new Date().toISOString()
+        zalozeno: firebase.firestore.Timestamp.fromDate(new Date()),
+        poznamka: "Platby provádějte vždy se stejným variabilním symbolem.",
+        produktId: "110",
+        splatky: []
       };
 
-      if (form.heslo.value !== form.potvrzeni.value) {
-        alert("Hesla se neshodují.");
-        return;
-      }
-
       try {
-        await db.collection("savings").add(data);
+        const userCredential = await auth.createUserWithEmailAndPassword(data.email, data.heslo);
+        const uid = userCredential.user.uid;
+
+        await db.collection("sporeni").doc(uid).set(data);
         await odeslatDoSmartEmailing(data);
+
         alert("Registrace proběhla úspěšně.");
-        window.location.href = "prehled.html";
+        window.location.href = "prehledsporeni.html";
       } catch (error) {
         console.error("Chyba při registraci:", error);
-        alert("Nepodařilo se odeslat formulář.");
+        alert("Nepodařilo se odeslat registraci: " + error.message);
       }
     });
   </script>
