@@ -21,11 +21,16 @@ export default async function handler(req, res) {
   const payload = {
     emailaddress: email,
     name: `${jmeno} ${prijmeni}`,
-    customfield_values: {
-      13: "sporeni",   // ID pole projekt
-      // Pokud máš pro telefon extra pole, např. ID 10, můžeš přidat: 10: telefon
-      // Pokud telefon není vlastní pole, vynech nebo použij základní parametr, pokud existuje
-    },
+    customfields: [
+      {
+        id: 13, // ID pole "projekt"
+        value: "sporeni"
+      },
+      {
+        id: 10, // ID pole "telefon"
+        value: telefon
+      }
+    ],
     force_subscribe: true
   };
 
