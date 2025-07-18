@@ -121,7 +121,7 @@
 
         alert("Registrace proběhla úspěšně. Váš variabilní symbol je: " + variabilniSymbol);
         await auth.signOut();
-        window.location.href = "https://sporeni.jednaunce.cz/prehled.html";
+        window.location.href = "https://sporeni.jednaunce.cz/prehled.html" + variabilniSymbol;
       } catch (error) {
         console.error("Chyba při registraci:", error);
         alert("Nepodařilo se odeslat registraci: " + error.message);
