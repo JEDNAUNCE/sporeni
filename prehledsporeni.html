@@ -1,4 +1,4 @@
-<!-- prehledsporeni.html s loginem, přehledem podle produktu, aktuální cenou a rozpisem splátek -->
+<!-- prehledsporeni.html s loginem, přehledem podle produktu, aktuální cenou, VS a rozpisem splátek -->
 <!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -15,6 +15,7 @@
     .plan-info { margin-top: 30px; text-align: center; }
     .plan-info img { max-width: 160px; margin: 20px auto; display: block; }
     .price-box { text-align: center; font-size: 1.2rem; font-weight: bold; margin: 20px 0; }
+    .vs-box { text-align: center; font-size: 1.1rem; margin-top: 10px; }
     .splatky table { width: 100%; margin-top: 20px; border-collapse: collapse; }
     .splatky th, .splatky td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
     .paid { color: green; font-weight: bold; }
@@ -38,6 +39,7 @@
         <img id="produktObrazek" src="" alt="Produkt" />
         <p><strong>Založeno:</strong> <span id="zalozeno"></span></p>
         <p><strong>Poznámka:</strong> <span id="poznamka"></span></p>
+        <p class="vs-box">Váš variabilní symbol: <strong id="vs">Načítám...</strong></p>
         <div class="price-box">
           <strong>Orientační cena mince:</strong> <span id="cenaMince">Načítám...</span>
         </div>
@@ -106,6 +108,7 @@
       document.getElementById("produktObrazek").src = produkt?.img || "";
       document.getElementById("zalozeno").innerText = new Date(data.zalozeno.seconds * 1000).toLocaleDateString('cs-CZ');
       document.getElementById("poznamka").innerText = data.poznamka || "";
+      document.getElementById("vs").innerText = data.variabilniSymbol || "-";
 
       // načteme cenu zlata
       try {
@@ -138,4 +141,3 @@
   </script>
 </body>
 </html>
-
