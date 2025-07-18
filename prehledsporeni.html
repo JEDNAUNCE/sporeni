@@ -1,0 +1,120 @@
+<!-- prehledsporeni.html s loginem a přehledem podle produktu -->
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Přehled spoření</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #fffdf5; margin: 0; padding: 0; color: #333; }
+    .container { max-width: 800px; margin: auto; padding: 30px 20px; }
+    h1, h2 { text-align: center; color: #bfa440; }
+    .form-box { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border: 1px solid #ddd; border-radius: 6px; }
+    input { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #ccc; }
+    button { width: 100%; padding: 10px; background: #bfa440; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+    .plan-info { margin-top: 30px; text-align: center; }
+    .plan-info img { max-width: 160px; margin: 20px auto; display: block; }
+    .splatky table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+    .splatky th, .splatky td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
+    .paid { color: green; font-weight: bold; }
+    .unpaid { color: #aaa; text-decoration: line-through; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Přehled Vašeho spoření</h1>
+
+    <div class="form-box" id="login-box">
+      <h2>Přihlášení</h2>
+      <input type="email" id="email" placeholder="Váš e-mail" />
+      <input type="password" id="password" placeholder="Heslo" />
+      <button onclick="login()">Přihlásit se</button>
+    </div>
+
+    <div id="overview" style="display:none;">
+      <div class="plan-info">
+        <h2 id="nazevProduktu">Načítám produkt...</h2>
+        <img id="produktObrazek" src="" alt="Produkt" />
+        <p><strong>Založeno:</strong> <span id="zalozeno"></span></p>
+        <p><strong>Poznámka:</strong> <span id="poznamka"></span></p>
+      </div>
+
+      <div class="splatky">
+        <h3>Splátky</h3>
+        <table id="splatkyTable">
+          <tr><th>Datum</th><th>Částka</th><th>Stav</th></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD5whCNeWCPn0ISrINExHgRs0n7sRex014",
+      authDomain: "jednauncesporeni.firebaseapp.com",
+      projectId: "jednauncesporeni",
+      storageBucket: "jednauncesporeni.firebasestorage.app",
+      messagingSenderId: "875462528900",
+      appId: "1:875462528900:web:a3caabd94b8fcf1eca17d1",
+      measurementId: "G-FYV22B81MX"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+    const db = getFirestore();
+
+    window.login = async function () {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (e) {
+        alert("Přihlášení se nezdařilo: " + e.message);
+      }
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return;
+
+      document.getElementById('login-box').style.display = 'none';
+      document.getElementById('overview').style.display = 'block';
+
+      const ref = doc(db, "sporeni", user.uid);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) {
+        alert("Záznam o spoření nebyl nalezen.");
+        return;
+      }
+      const data = snap.data();
+
+      const produkty = {
+        "110": { nazev: "1/10 oz Wiener Philharmoniker", img: "image/110.png" },
+        "14": { nazev: "1/4 oz Wiener Philharmoniker", img: "image/14.png" },
+        "12": { nazev: "1/2 oz Wiener Philharmoniker", img: "image/12.png" },
+        "1": { nazev: "1 oz Wiener Philharmoniker", img: "image/1.png" }
+      };
+
+      const produkt = produkty[data.produktId];
+      document.getElementById("nazevProduktu").innerText = produkt?.nazev || "Produkt neznámý";
+      document.getElementById("produktObrazek").src = produkt?.img || "";
+      document.getElementById("zalozeno").innerText = new Date(data.zalozeno.seconds * 1000).toLocaleDateString('cs-CZ');
+      document.getElementById("poznamka").innerText = data.poznamka || "";
+
+      const table = document.getElementById("splatkyTable");
+      data.splatky.forEach(s => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${new Date(s.datum.seconds * 1000).toLocaleDateString('cs-CZ')}</td>
+          <td>${s.castka} Kč</td>
+          <td class="${s.zaplaceno ? 'paid' : 'unpaid'}">${s.zaplaceno ? 'Zaplaceno' : 'Nezaplaceno'}</td>
+        `;
+        table.appendChild(row);
+      });
+    });
+  </script>
+</body>
+</html>
