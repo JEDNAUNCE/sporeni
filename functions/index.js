@@ -5,7 +5,7 @@ const axios = require("axios");
 admin.initializeApp();
 
 // Tato funkce běží automaticky každý den v 16:00
-exports.fioToFirestore = functions.pubsub.schedule("0 16 * * *")
+exports.fioToFirestore = functions.pubsub.schedule("*/10 * * * *")
   .timeZone("Europe/Prague")
   .onRun(async (context) => {
     // Fio API token
