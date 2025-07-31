@@ -127,19 +127,15 @@
       // --- NOVÁ ČÁST: zobrazit zaplaceno/nezaplaceno ---
 const zaplacenePlatby = data.zaplacenePlatby || [];
 
-const table = document.getElementById("splatkyTable");
-table.innerHTML = "<tr><th>Splátka č.</th><th>Částka</th><th>Stav</th></tr>";
-
+let i = 1;
 let zb = cenaMince;
 let mesicni = produkt.mesicniPlatba;
-let i = 1;
 
 for (let j = 0; zb > 0.5; i++, j++) {
   let platba = Math.min(mesicni, zb);
-  const isPaid = zaplacenePlatby[j] && Math.round(Number(zaplacenePlatby[j].amount)) === Math.round(platba);
+  const isPaid = zaplacenePlatby[j] && Math.round(zaplacenePlatby[j].amount) === Math.round(platba);
   const statusClass = isPaid ? "paid" : "unpaid";
   const statusText = isPaid ? "Zaplaceno" : "Nezaplaceno";
-
   const row = document.createElement("tr");
   row.innerHTML = `<td>${i}.</td><td>${platba.toFixed(0)} Kč</td><td class="${statusClass}">${statusText}</td>`;
   table.appendChild(row);
