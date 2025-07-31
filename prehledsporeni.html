@@ -23,6 +23,8 @@
     .unpaid { color: red; font-weight: bold; }
     .note { font-size: 0.97em; margin-top: 10px; color: #666; }
     .doplatek { font-size: 1.05em; color: #bfa440; margin-top: 12px; }
+    #vyberPrevzeti { background: #faf7ed; border: 1px solid #e3dac5; border-radius: 8px; padding: 18px; margin: 25px 0 0 0; }
+    #vyberPrevzeti label { margin-right: 25px; font-weight: normal; }
   </style>
 </head>
 <body>
@@ -59,12 +61,21 @@
           Pokud si přejete minci zaslat poštou, cena bezpečnostní zásilky je 119 Kč.
         </p>
       </div>
+      <!-- Výběr převzetí -->
+      <div id="vyberPrevzeti" style="display:none; text-align:center;">
+        <h3>Způsob převzetí mince</h3>
+        <label><input type="radio" name="zpusobPrevzeti" value="posta"> Odeslat poštou (bezpečnostní zásilka 119 Kč)</label>
+        <label><input type="radio" name="zpusobPrevzeti" value="osobne"> Osobně vyzvednout v kanceláři</label>
+        <br>
+        <button id="potvrditPrevzeti" style="margin-top:12px; padding: 8px 20px;">Potvrdit volbu</button>
+        <div id="potvrzeniVolby" style="color:green; margin-top:8px; display:none;"></div>
+      </div>
     </div>
   </div>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD5whCNeWCPn0ISrINExHgRs0n7sRex014",
@@ -95,11 +106,16 @@
       window.location.reload();
     };
 
+    // Globální proměnné pro výběr převzetí
+    let vyberDiv = document.getElementById("vyberPrevzeti");
+    let potvrzeniVolbyDiv = document.getElementById("potvrzeniVolby");
+
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         document.getElementById('logout-box').style.display = 'none';
         document.getElementById('login-box').style.display = 'block';
         document.getElementById('overview').style.display = 'none';
+        vyberDiv.style.display = 'none';
         return;
       }
       document.getElementById('logout-box').style.display = 'block';
@@ -151,8 +167,10 @@
       let mesicni = produkt.mesicniPlatba || 1000;
       let cumul = 0;
       let posledniSpl = 0;
+      let splatekCelkem = 0;
+      let vseZaplaceno = true;
 
-      // Spočítej kolik je celých splátek po 750 Kč
+      // Splátky (všechny jako 750 Kč*)
       while (zb > mesicni) {
         cumul += mesicni;
         const isPaid = paidTotal >= cumul;
@@ -161,8 +179,10 @@
         const row = document.createElement("tr");
         row.innerHTML = `<td>${i}.</td><td>750 Kč*</td><td class="${statusClass}">${statusText}</td>`;
         table.appendChild(row);
+        if (!isPaid) vseZaplaceno = false;
         zb -= mesicni;
         i++;
+        splatekCelkem++;
       }
       // Poslední splátka (také 750 Kč*)
       if (zb > 0) {
@@ -174,11 +194,57 @@
         const row = document.createElement("tr");
         row.innerHTML = `<td>${i}.</td><td>750 Kč*</td><td class="${statusClass}">${statusText}</td>`;
         table.appendChild(row);
+        if (!isPaid) vseZaplaceno = false;
+        splatekCelkem++;
       }
       // Vypiš pod tabulkou aktuální výši poslední splátky (dopočet)
       document.getElementById("posledniSpl").innerText =
         posledniSpl > 0 ? posledniSpl.toFixed(2).replace('.', ',') + " Kč" : "0 Kč";
+
+      // -- Výběr převzetí po úplném zaplacení --
+      if (vseZaplaceno) {
+        vyberDiv.style.display = "block";
+        // Pokud už je volba uložená, zobraz info a předvyplň radio
+        if (data.zpusobPrevzeti) {
+          potvrzeniVolbyDiv.innerText =
+            "Zvolený způsob převzetí: " + (data.zpusobPrevzeti === "posta" ? "Odeslat poštou" : "Osobní vyzvednutí");
+          potvrzeniVolbyDiv.style.display = "block";
+          // předvyber radio
+          let radios = document.getElementsByName("zpusobPrevzeti");
+          for (let r of radios) {
+            if (r.value === data.zpusobPrevzeti) r.checked = true;
+          }
+        } else {
+          potvrzeniVolbyDiv.style.display = "none";
+        }
+      } else {
+        vyberDiv.style.display = "none";
+        potvrzeniVolbyDiv.style.display = "none";
+      }
     });
+
+    // Uložení volby způsobu převzetí do Firestore
+    document.getElementById("potvrditPrevzeti").onclick = async function() {
+      const radios = document.getElementsByName("zpusobPrevzeti");
+      let vybrano = "";
+      for (let r of radios) {
+        if (r.checked) vybrano = r.value;
+      }
+      if (!vybrano) {
+        alert("Prosím, zvolte způsob převzetí.");
+        return;
+      }
+      // Zjisti UID uživatele
+      const user = getAuth().currentUser;
+      if (!user) return;
+      await updateDoc(doc(db, "sporeni", user.uid), {
+        zpusobPrevzeti: vybrano,
+        datumPrevzeti: new Date().toISOString()
+      });
+      potvrzeniVolbyDiv.innerText =
+        "Zvolený způsob převzetí: " + (vybrano === "posta" ? "Odeslat poštou" : "Osobní vyzvednutí");
+      potvrzeniVolbyDiv.style.display = "block";
+    };
   </script>
 </body>
 </html>
