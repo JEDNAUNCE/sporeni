@@ -1,3 +1,42 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - Správa spoření</title>
+  <style>
+    body { font-family: sans-serif; background: #f5f5f5; padding: 20px; }
+    .login-box, .admin-box { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 6px; }
+    input, textarea, select { width: 100%; padding: 8px; margin: 5px 0; }
+    button { padding: 10px 15px; background: #bfa440; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .user-list { margin-top: 20px; }
+    .user-entry { padding: 10px; border: 1px solid #ddd; margin-bottom: 10px; background: #fff; cursor: pointer; }
+    .user-entry:hover { background: #f0f0f0; }
+  </style>
+</head>
+<body>
+<div class="login-box" id="loginBox">
+  <h2>Přihlášení admina</h2>
+  <input type="email" id="email" placeholder="E-mail" />
+  <input type="password" id="password" placeholder="Heslo" />
+  <button onclick="login()">Přihlásit se</button>
+</div>
+
+<div class="admin-box" id="adminBox" style="display:none;">
+  <h2>Seznam uživatelů</h2>
+  <div id="userList" class="user-list"></div>
+  <div id="userDetail" style="display:none;"></div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD5whCNeWCPn0ISrINExHgRs0n7sRex014",
+    authDomain: "jednauncesporeni.firebaseapp.com",
+    projectId: "jednauncesporeni",
   };
 
   const app = initializeApp(firebaseConfig);
