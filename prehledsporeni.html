@@ -95,6 +95,9 @@
       }
       const data = snap.data();
 
+      console.log("Načtená data:", data);
+      console.log("ZaplacenePlatby:", data.zaplacenePlatby);
+
       const produkty = {
         "110": { nazev: "1/10 oz Wiener Philharmoniker", img: "image/110.png", mesicniPlatba: 750, koef: 0.1 },
         "14": { nazev: "1/4 oz Wiener Philharmoniker", img: "image/14.png", mesicniPlatba: 1500, koef: 0.25 },
@@ -124,12 +127,12 @@
         cenaMince = produkt.mesicniPlatba * 12; // fallback cena
       }
 
-      // --- NOVÁ ČÁST: zobrazit zaplaceno/nezaplaceno ---
+// --- NOVÁ ČÁST: zobrazit zaplaceno/nezaplaceno ---
 const table = document.getElementById("splatkyTable");
 table.innerHTML = "<tr><th>Splátka č.</th><th>Částka</th><th>Stav</th></tr>";
 
-// Spočti celkem zaplacené peníze
-let paidTotal = (zaplacenePlatby || []).reduce((a, b) => a + Math.round(Number(b.amount)), 0);
+// TADY POUŽIJ data.zaplacenePlatby
+let paidTotal = (data.zaplacenePlatby || []).reduce((a, b) => a + Math.round(Number(b.amount)), 0);
 
 let i = 1;
 let zb = cenaMince;
@@ -149,6 +152,7 @@ while (zb > 0.5) {
   zb -= platba;
   i++;
 }
+
 
 
 
