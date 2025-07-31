@@ -52,6 +52,9 @@
           <tr><th>Splátka č.</th><th>Částka</th><th>Stav</th></tr>
         </table>
       </div>
+        <p style="font-size: 0.95em; margin-top: 10px; color: #666;">
+    *Poslední splátka bude upravena podle aktuální ceny mince v okamžiku doplacení. Pokud cena mezitím vzroste/poklesne, do poslední splátky doplatíte pouze aktuální zůstatek.
+  </p>
     </div>
   </div>
   <script type="module">
@@ -145,25 +148,21 @@
       const table = document.getElementById("splatkyTable");
       table.innerHTML = "<tr><th>Splátka č.</th><th>Částka</th><th>Stav</th></tr>";
 
-      let paidTotal = (data.zaplacenePlatby || []).reduce((a, b) => a + Math.round(Number(b.amount)), 0);
-      let i = 1;
-      let zb = cenaMince;
-      let mesicni = produkt.mesicniPlatba || 1000;
-      let cumul = 0;
-
-      while (zb > 0.5) {
-        const platba = Math.min(mesicni, zb);
-        cumul += platba;
-        const isPaid = paidTotal >= cumul;
-        const statusClass = isPaid ? "paid" : "unpaid";
-        const statusText = isPaid ? "Zaplaceno" : "Nezaplaceno";
-        const row = document.createElement("tr");
-        row.innerHTML = `<td>${i}.</td><td>${platba.toFixed(0)} Kč</td><td class="${statusClass}">${statusText}</td>`;
-        table.appendChild(row);
-
-        zb -= platba;
-        i++;
-      }
+let i = 1;
+let zb = cenaMince;
+let mesicni = produkt.mesicniPlatba || 1000;
+let cumul = 0;
+while (zb > mesicni) {
+  cumul += mesicni;
+  const isPaid = paidTotal >= cumul;
+  const statusClass = isPaid ? "paid" : "unpaid";
+  const statusText = isPaid ? "Zaplaceno" : "Nezaplaceno";
+  const row = document.createElement("tr");
+  row.innerHTML = `<td>${i}.</td><td>${mesicni.toFixed(0)} Kč</td><td class="${statusClass}">${statusText}</td>`;
+  table.appendChild(row);
+  zb -= mesicni;
+  i++;
+}
     });
   </script>
 </body>
