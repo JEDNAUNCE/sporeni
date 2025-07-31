@@ -53,13 +53,12 @@
       <h3>Splátkový plán</h3>
       <table id="installments">
         <tr><th>Splátka č.</th><th>Částka</th></tr>
-        <!-- Splátky se vkládají skriptem -->
       </table>
       <div class="doplatek" id="doplatekInfo"></div>
       <div class="note">
-        *Všechny splátky hraďte vždy ve výši 750 Kč. Aktuálně vychází poslední splátka na <span id="posledniSpl">---</span>.<br>
-        Prosím, uhraďte plnou částku 750 Kč dle programu, případný přeplatek Vám bude vrácen na účet.<br>
-        Pokud si přejete minci zaslat poštou, cena bezpečnostní zásilky je 119 Kč.
+        *Poslední splátka bude upravena podle aktuální ceny mince v okamžiku doplacení.<br>
+        Pokud cena mezitím vzroste/poklesne, do poslední splátky doplatíte pouze aktuální zůstatek.<br>
+        Případný přeplatek Vám bude vrácen na účet.
       </div>
     </div>
   </div>
@@ -83,33 +82,27 @@
         const table = document.getElementById('installments');
         table.innerHTML = "<tr><th>Splátka č.</th><th>Částka</th></tr>";
 
-        let remaining = total;
-        let count = 1;
+        // Vždy 12 splátek, prvních 11 je 750 Kč bez hvězdičky, poslední 750 Kč s hvězdičkou
+        for (let i = 1; i <= 12; i++) {
+          if (i < 12) {
+            table.innerHTML += `<tr><td>${i}.</td><td>750 Kč</td></tr>`;
+          } else {
+            table.innerHTML += `<tr><td>12.</td><td>750 Kč*</td></tr>`;
+          }
+        }
 
-        while (remaining > monthlyPayment) {
-          table.innerHTML += `<tr><td>${count}.</td><td>750 Kč*</td></tr>`;
-          remaining -= monthlyPayment;
-          count++;
-        }
-        // Poslední splátka, může být nižší než 750 Kč
-        if (remaining > 0) {
-          table.innerHTML += `<tr><td>${count}.</td><td>${remaining.toFixed(2).replace('.', ',')} Kč*</td></tr>`;
-        }
+        // Vypočítat kolik opravdu zbývá do ceny mince po 11 splátkách
+        const remaining = Math.max(0, total - (monthlyPayment * 11));
 
         // Dynamický výpočet pod tabulkou
         document.getElementById("doplatekInfo").innerHTML =
           'Aktuální orientační výše poslední splátky: <b>' +
-          (remaining > 0 ? remaining.toFixed(2).replace('.', ',') : '0') +
+          remaining.toFixed(2).replace('.', ',') +
           ' Kč</b>';
-
-        // Zápis poslední splátky i do textu pod tabulkou (stejně jako v přehledu)
-        document.getElementById("posledniSpl").innerText =
-          (remaining > 0 ? remaining.toFixed(2).replace('.', ',') : '0') + ' Kč';
 
       } catch (error) {
         document.getElementById('current-price').innerText = "Nepodařilo se načíst aktuální cenu.";
         document.getElementById("doplatekInfo").innerHTML = "";
-        document.getElementById("posledniSpl").innerText = "---";
         console.error(error);
       }
     }
