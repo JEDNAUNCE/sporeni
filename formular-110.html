@@ -16,12 +16,6 @@
     input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
     button { padding: 10px; background-color: #d6b656; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; }
     button:hover { background-color: #b49b45; }
-    .splatky { max-width: 400px; margin: 36px auto 0 auto; }
-    .splatky h3 { text-align: center; color: #bfa440; }
-    .splatky table { width: 100%; margin-bottom: 14px; border-collapse: collapse; }
-    .splatky th, .splatky td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
-    .doplatek { font-size: 1.05em; color: #bfa440; margin-top: 12px; }
-    .note { font-size: 0.97em; color: #666; }
   </style>
 </head>
 <body>
@@ -40,40 +34,7 @@
     <button type="submit">Odeslat registraci</button>
   </form>
 
-  <!-- SPLÁTKOVÝ PLÁN -->
-  <div class="splatky">
-    <h3>Splátkový plán</h3>
-    <table>
-      <tr><th>Splátka č.</th><th>Částka</th></tr>
-      <tr><td>1.–12.</td><td>750 Kč*</td></tr>
-    </table>
-    <div class="doplatek" id="doplatekInfo">
-      <!-- Dynamický výpočet poslední splátky -->
-    </div>
-    <p class="note">
-      *Poslední splátka bude upravena podle aktuální ceny mince v okamžiku doplacení.<br>
-      Pokud cena mezitím vzroste/poklesne, do poslední splátky doplatíte pouze aktuální zůstatek.<br>
-      Případný přeplatek Vám bude vrácen na účet.
-    </p>
-  </div>
-
   <script>
-    // Nastavení statické ceny mince (editujte dle aktuální nabídky)
-    const cenaMince = 8950;  // CZK
-    const mesicniSplatka = 750; // CZK
-
-    // Výpočet splátek
-    const splatkyPocet = Math.floor(cenaMince / mesicniSplatka);
-    const posledniSpl = cenaMince - (splatkyPocet * mesicniSplatka);
-
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("doplatekInfo").innerHTML =
-        'Aktuální orientační výše poslední splátky: <b>' +
-        (posledniSpl > 0 ? posledniSpl.toLocaleString('cs-CZ') : '0') +
-        ' Kč</b>';
-    });
-
-    // --- Firebase kód zachován beze změny ---
     const firebaseConfig = {
       apiKey: "AIzaSyD5whCNeWCPn0ISrINExHgRs0n7sRex014",
       authDomain: "jednauncesporeni.firebaseapp.com",
@@ -169,3 +130,9 @@
   </script>
 </body>
 </html>
+
+
+
+
+
+
