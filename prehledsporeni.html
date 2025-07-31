@@ -125,25 +125,23 @@
       }
 
       // --- NOVÁ ČÁST: zobrazit zaplaceno/nezaplaceno ---
-const zaplacenePlatby = data.zaplacenePlatby || [];
-
 const table = document.getElementById("splatkyTable");
 table.innerHTML = "<tr><th>Splátka č.</th><th>Částka</th><th>Stav</th></tr>";
+
+// Spočti celkem zaplacené peníze
+let paidTotal = (zaplacenePlatby || []).reduce((a, b) => a + Math.round(Number(b.amount)), 0);
 
 let i = 1;
 let zb = cenaMince;
 let mesicni = produkt.mesicniPlatba;
-let paidSum = 0;
-let paidTotal = zaplacenePlatby.reduce((a, b) => a + Math.round(Number(b.amount)), 0);
+let cumul = 0;
 
 while (zb > 0.5) {
   const platba = Math.min(mesicni, zb);
-  paidSum += platba;
-  const isPaid = paidTotal >= paidSum;
-
+  cumul += platba;
+  const isPaid = paidTotal >= cumul;
   const statusClass = isPaid ? "paid" : "unpaid";
   const statusText = isPaid ? "Zaplaceno" : "Nezaplaceno";
-
   const row = document.createElement("tr");
   row.innerHTML = `<td>${i}.</td><td>${platba.toFixed(0)} Kč</td><td class="${statusClass}">${statusText}</td>`;
   table.appendChild(row);
@@ -151,6 +149,7 @@ while (zb > 0.5) {
   zb -= platba;
   i++;
 }
+
 
 
 
