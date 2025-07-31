@@ -21,6 +21,8 @@
     .splatky th, .splatky td { padding: 10px; border-bottom: 1px solid #ddd; text-align: left; }
     .paid { color: green; font-weight: bold; }
     .unpaid { color: red; font-weight: bold; }
+    .note { font-size: 0.97em; margin-top: 10px; color: #666; }
+    .doplatek { font-size: 1.05em; color: #bfa440; margin-top: 12px; }
   </style>
 </head>
 <body>
@@ -51,10 +53,12 @@
         <table id="splatkyTable">
           <tr><th>Splátka č.</th><th>Částka</th><th>Stav</th></tr>
         </table>
+        <div class="doplatek" id="doplatekInfo"></div>
+        <p class="note">
+          *Všechny splátky hraďte vždy ve výši 750 Kč. Aktuálně vychází poslední splátka na <span id="posledniSpl">---</span>. Prosím, uhraďte plnou částku 750 Kč dle programu, případný přeplatek Vám bude vrácen na účet.<br>
+          Pokud si přejete minci zaslat poštou, cena bezpečnostní zásilky je 119 Kč.
+        </p>
       </div>
-      <p style="font-size: 0.95em; margin-top: 10px; color: #666;">
-        *Poslední splátka bude upravena podle aktuální ceny mince v okamžiku doplacení. Pokud cena mezitím vzroste/poklesne, do poslední splátky doplatíte pouze aktuální zůstatek.
-      </p>
     </div>
   </div>
   <script type="module">
@@ -146,29 +150,34 @@
       let zb = cenaMince;
       let mesicni = produkt.mesicniPlatba || 1000;
       let cumul = 0;
+      let posledniSpl = 0;
 
-      // Splátky s pevným mesicni, poslední splátka je "dle doplatku"
+      // Spočítej kolik je celých splátek po 750 Kč
       while (zb > mesicni) {
         cumul += mesicni;
         const isPaid = paidTotal >= cumul;
         const statusClass = isPaid ? "paid" : "unpaid";
         const statusText = isPaid ? "Zaplaceno" : "Nezaplaceno";
         const row = document.createElement("tr");
-        row.innerHTML = `<td>${i}.</td><td>${mesicni.toFixed(0)} Kč</td><td class="${statusClass}">${statusText}</td>`;
+        row.innerHTML = `<td>${i}.</td><td>750 Kč*</td><td class="${statusClass}">${statusText}</td>`;
         table.appendChild(row);
         zb -= mesicni;
         i++;
       }
-      // Poslední splátka (doplatek)
+      // Poslední splátka (také 750 Kč*)
       if (zb > 0) {
-        cumul += zb;
+        posledniSpl = zb;
+        cumul += mesicni;
         const isPaid = paidTotal >= cumul;
         const statusClass = isPaid ? "paid" : "unpaid";
         const statusText = isPaid ? "Zaplaceno" : "Nezaplaceno";
         const row = document.createElement("tr");
-        row.innerHTML = `<td>${i}.</td><td>dle doplatku*</td><td class="${statusClass}">${statusText}</td>`;
+        row.innerHTML = `<td>${i}.</td><td>750 Kč*</td><td class="${statusClass}">${statusText}</td>`;
         table.appendChild(row);
       }
+      // Vypiš pod tabulkou aktuální výši poslední splátky (dopočet)
+      document.getElementById("posledniSpl").innerText =
+        posledniSpl > 0 ? posledniSpl.toFixed(2).replace('.', ',') + " Kč" : "0 Kč";
     });
   </script>
 </body>
