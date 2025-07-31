@@ -13,6 +13,10 @@
     .user-entry { padding: 10px; border: 1px solid #ddd; margin-bottom: 10px; background: #fff; cursor: pointer; }
     .user-entry:hover { background: #f0f0f0; }
     .splatky-box label { display: block; margin-top: 10px; font-weight: bold; }
+    table.pending-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    table.pending-table th, table.pending-table td { padding: 8px; border-bottom: 1px solid #eee; text-align: left; }
+    table.pending-table th { background: #f8f8f2; }
+    table.pending-table td button { padding: 6px 12px; border: none; background: #bfa440; color: white; border-radius: 3px; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -27,6 +31,7 @@
   <h2>Seznam uživatelů</h2>
   <div id="userList" class="user-list"></div>
   <div id="userDetail" style="display:none;"></div>
+  <div id="pendingList" style="margin-top:40px;"></div>
 </div>
 
 <script type="module">
@@ -56,6 +61,7 @@
       document.getElementById('loginBox').style.display = 'none';
       document.getElementById('adminBox').style.display = 'block';
       loadUsers();
+      loadPending();
     } catch (e) {
       alert("Přihlášení selhalo: " + e.message);
     }
@@ -140,7 +146,6 @@
     // Nově: volba převzetí a případně datum změny volby
     const prevzeti = document.getElementById("prevzeti").value;
     let datumprevzeti = document.getElementById("datumprevzeti").value;
-    // Pokud je změněná volba a není nezvoleno, aktualizuj datum na teď
     const snap = await getDoc(ref);
     const puvodni = snap.data().zpusobPrevzeti || "";
     if (prevzeti && prevzeti !== puvodni) {
@@ -157,12 +162,66 @@
       produktId: document.getElementById("prod").value,
       zaplacenePlatby: platby,
       zpusobPrevzeti: prevzeti,
-      datumPrevzeti: datumprevzeti
+      datumPrevzeti: datumprevzeti,
+      prevzetiHotovo: false // Po editaci vždy resetuj na "čekající", lze doladit dle potřeby
     });
     alert("Uloženo.");
     document.getElementById("userDetail").style.display = "none";
     loadUsers();
+    loadPending();
   }
+
+  // ---- NOVÁ FUNKCE PRO PŘEHLED ČEKAJÍCÍCH ----
+  async function loadPending() {
+    const pendingDiv = document.getElementById("pendingList");
+    const snap = await getDocs(collection(db, "sporeni"));
+    let items = [];
+    snap.forEach(docu => {
+      const d = docu.data();
+      if (
+        (d.zpusobPrevzeti === "posta" || d.zpusobPrevzeti === "osobne")
+        && !d.prevzetiHotovo
+      ) {
+        items.push({
+          id: docu.id,
+          jmeno: d.jmeno,
+          prijmeni: d.prijmeni,
+          email: d.email,
+          variabilniSymbol: d.variabilniSymbol,
+          zpusobPrevzeti: d.zpusobPrevzeti,
+          datumPrevzeti: d.datumPrevzeti
+        });
+      }
+    });
+    if (items.length === 0) {
+      pendingDiv.innerHTML = "<h3 style='margin-top:0;'>Zákazníci čekající na předání/odeslání</h3><div>Žádný zákazník nečeká na zpracování.</div>";
+      return;
+    }
+    let html = "<h3 style='margin-top:0;'>Zákazníci čekající na předání/odeslání</h3>";
+    html += "<table class='pending-table'><tr><th>Jméno</th><th>E-mail</th><th>VS</th><th>Způsob</th><th>Datum</th><th>Stav</th></tr>";
+    for (let u of items) {
+      html += `<tr>
+        <td>${u.jmeno} ${u.prijmeni}</td>
+        <td>${u.email}</td>
+        <td>${u.variabilniSymbol}</td>
+        <td>${u.zpusobPrevzeti === "posta" ? "Poštou" : "Osobně"}</td>
+        <td>${u.datumPrevzeti ? new Date(u.datumPrevzeti).toLocaleString('cs-CZ') : ""}</td>
+        <td>
+          <button onclick="oznacitVyreseno('${u.id}')">Vyřízeno</button>
+        </td>
+      </tr>`;
+    }
+    html += "</table>";
+    pendingDiv.innerHTML = html;
+  }
+
+  window.oznacitVyreseno = async function(id) {
+    await updateDoc(doc(db, "sporeni", id), {
+      prevzetiHotovo: true
+    });
+    await loadPending();
+  }
+
 </script>
 </body>
 </html>
