@@ -80,8 +80,6 @@
     const ref = doc(db, "sporeni", id);
     const snap = await getDoc(ref);
     const data = snap.data();
-    const box = document.getElementById("userDetail");
-    box.style.display = "block";
 
     const produkty = {
       "110": { mesicniPlatba: 750 },
@@ -103,7 +101,7 @@
       i++;
     }
 
-    box.innerHTML = `
+    document.getElementById("userDetail").innerHTML = `
       <h3>Upravit zákazníka</h3>
       <label>Jméno</label><input id="fn" value="${data.jmeno}" />
       <label>Příjmení</label><input id="ln" value="${data.prijmeni}" />
@@ -112,6 +110,16 @@
       <label>Poznámka</label><textarea id="poz" rows="3">${data.poznamka || ""}</textarea>
       <label>Variabilní symbol</label><input id="vs" value="${data.variabilniSymbol}" />
       <label>Produkt ID</label><input id="prod" value="${data.produktId}" />
+
+      <label>Způsob převzetí</label>
+      <select id="prevzeti">
+        <option value="">Nezvoleno</option>
+        <option value="posta" ${data.zpusobPrevzeti === "posta" ? "selected" : ""}>Poštou</option>
+        <option value="osobne" ${data.zpusobPrevzeti === "osobne" ? "selected" : ""}>Osobně</option>
+      </select>
+      <label>Datum volby převzetí</label>
+      <input id="datumprevzeti" value="${data.datumPrevzeti ? new Date(data.datumPrevzeti).toLocaleString('cs-CZ') : ''}" readonly />
+
       <div class="splatky-box">
         <label>Označ splátky jako zaplacené</label>
         ${rows}
@@ -119,6 +127,8 @@
       <br/>
       <button onclick="save('${id}')">Uložit</button>
     `;
+
+    document.getElementById("userDetail").style.display = "block";
   }
 
   window.save = async function(id) {
@@ -126,6 +136,16 @@
     const platby = Array.from(document.getElementsByClassName("checkPlatba"))
       .filter(cb => cb.checked)
       .map(cb => ({ amount: parseInt(cb.value), date: new Date().toISOString().split("T")[0] }));
+
+    // Nově: volba převzetí a případně datum změny volby
+    const prevzeti = document.getElementById("prevzeti").value;
+    let datumprevzeti = document.getElementById("datumprevzeti").value;
+    // Pokud je změněná volba a není nezvoleno, aktualizuj datum na teď
+    const snap = await getDoc(ref);
+    const puvodni = snap.data().zpusobPrevzeti || "";
+    if (prevzeti && prevzeti !== puvodni) {
+      datumprevzeti = new Date().toISOString();
+    }
 
     await updateDoc(ref, {
       jmeno: document.getElementById("fn").value,
@@ -136,6 +156,8 @@
       variabilniSymbol: document.getElementById("vs").value,
       produktId: document.getElementById("prod").value,
       zaplacenePlatby: platby,
+      zpusobPrevzeti: prevzeti,
+      datumPrevzeti: datumprevzeti
     });
     alert("Uloženo.");
     document.getElementById("userDetail").style.display = "none";
