@@ -32,6 +32,7 @@
   <div id="userList" class="user-list"></div>
   <div id="userDetail" style="display:none;"></div>
   <div id="pendingList" style="margin-top:40px;"></div>
+  <div id="historyList" style="margin-top:40px;"></div>
 </div>
 
 <script type="module">
@@ -62,6 +63,7 @@
       document.getElementById('adminBox').style.display = 'block';
       loadUsers();
       loadPending();
+      loadHistory();
     } catch (e) {
       alert("Přihlášení selhalo: " + e.message);
     }
@@ -143,13 +145,15 @@
       .filter(cb => cb.checked)
       .map(cb => ({ amount: parseInt(cb.value), date: new Date().toISOString().split("T")[0] }));
 
-    // Nově: volba převzetí a případně datum změny volby
     const prevzeti = document.getElementById("prevzeti").value;
     let datumprevzeti = document.getElementById("datumprevzeti").value;
     const snap = await getDoc(ref);
     const puvodni = snap.data().zpusobPrevzeti || "";
+    // Reset prevzetiHotovo na false při jakékoliv změně volby!
+    let prevzetiHotovo = snap.data().prevzetiHotovo || false;
     if (prevzeti && prevzeti !== puvodni) {
       datumprevzeti = new Date().toISOString();
+      prevzetiHotovo = false;
     }
 
     await updateDoc(ref, {
@@ -163,12 +167,13 @@
       zaplacenePlatby: platby,
       zpusobPrevzeti: prevzeti,
       datumPrevzeti: datumprevzeti,
-      prevzetiHotovo: false // Po editaci vždy resetuj na "čekající", lze doladit dle potřeby
+      prevzetiHotovo: prevzetiHotovo
     });
     alert("Uloženo.");
     document.getElementById("userDetail").style.display = "none";
     loadUsers();
     loadPending();
+    loadHistory();
   }
 
   // ---- NOVÁ FUNKCE PRO PŘEHLED ČEKAJÍCÍCH ----
@@ -220,6 +225,47 @@
       prevzetiHotovo: true
     });
     await loadPending();
+    await loadHistory();
+  }
+
+  // ---- NOVÁ FUNKCE PRO HISTORII ----
+  async function loadHistory() {
+    const historyDiv = document.getElementById("historyList");
+    const snap = await getDocs(collection(db, "sporeni"));
+    let items = [];
+    snap.forEach(docu => {
+      const d = docu.data();
+      if (
+        (d.zpusobPrevzeti === "posta" || d.zpusobPrevzeti === "osobne")
+        && d.prevzetiHotovo
+      ) {
+        items.push({
+          jmeno: d.jmeno,
+          prijmeni: d.prijmeni,
+          email: d.email,
+          variabilniSymbol: d.variabilniSymbol,
+          zpusobPrevzeti: d.zpusobPrevzeti,
+          datumPrevzeti: d.datumPrevzeti
+        });
+      }
+    });
+    if (items.length === 0) {
+      historyDiv.innerHTML = "<h3 style='margin-top:0;'>Historie vyřízených předání/odeslání</h3><div>Žádný záznam v historii.</div>";
+      return;
+    }
+    let html = "<h3 style='margin-top:0;'>Historie vyřízených předání/odeslání</h3>";
+    html += "<table class='pending-table'><tr><th>Jméno</th><th>E-mail</th><th>VS</th><th>Způsob</th><th>Datum</th></tr>";
+    for (let u of items) {
+      html += `<tr>
+        <td>${u.jmeno} ${u.prijmeni}</td>
+        <td>${u.email}</td>
+        <td>${u.variabilniSymbol}</td>
+        <td>${u.zpusobPrevzeti === "posta" ? "Poštou" : "Osobně"}</td>
+        <td>${u.datumPrevzeti ? new Date(u.datumPrevzeti).toLocaleString('cs-CZ') : ""}</td>
+      </tr>`;
+    }
+    html += "</table>";
+    historyDiv.innerHTML = html;
   }
 
 </script>
