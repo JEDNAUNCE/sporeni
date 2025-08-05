@@ -127,6 +127,17 @@
       background: #f6f6f6;
       border-top: 1px solid #eee;
     }
+    .hero-logo {
+  display: block;
+  margin: 0 auto 24px auto;
+  width: 160px; /* nebo dle potřeby */
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.hero-logo:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  transition: box-shadow 0.3s ease;
+}
   </style>
 </head>
 <body>
@@ -150,6 +161,7 @@
   </header>
 
 <div class="hero">
+  <img src="/image/logoJU.png" alt="JEDNA UNCE logo" class="hero-logo" />
   <h1>Bezpečné spoření do fyzického zlata a stříbra</h1>
   <p>Trvalá hodnota. Tisíciletá tradice. Ochrana před inflací.</p>
 </div>
