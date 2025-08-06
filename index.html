@@ -216,9 +216,29 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
+@media (min-width: 768px) {
+  .hero-content {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+  }
 
+  .hero-image {
+    max-width: 420px;
+  }
 
+  .hero-text {
+    max-width: 540px;
+    margin-left: 50px; 
+    padding-left: 0;   
+    text-align: left;
+  }
 
+  .hero-logo {
+    margin-left: 0;
+    margin-right: auto;
+  }
+}
 
 .how-it-works {
   background: #fff;
@@ -271,39 +291,13 @@
 
   .how-steps {
     flex: 1;
-    max-width: 600px;
   }
 
   .how-image {
     flex: 1;
     display: flex;
     justify-content: center;
-    margin-left: 30px;
   }
-}
-
-
-
-
-.how-cta {
-  margin-top: 24px;
-}
-
-.cta-button {
-  display: inline-block;
-  padding: 12px 24px;
-  background-color: #bfa440;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 6px;
-  font-weight: 500;
-  font-size: 1rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  transition: background 0.3s ease;
-}
-
-.cta-button:hover {
-  background-color: #a78b36;
 }
 
 
@@ -384,16 +378,13 @@
         <li>Vyberete si osobní odběr nebo bezpečné doručení domů.</li>
         <li>Máte investiční mince ve vlastních rukou.</li>
       </ol>
-      <div class="how-cta">
-        <a href="informace-o-sporeni.html" class="cta-button">Více informací o spoření</a>
-      </div>
     </div>
-
     <div class="how-image">
       <img src="/image/kazeta.jpg" alt="Kazeta s mincemi" />
     </div>
   </div>
 </div>
+
 
 <div class="about-text">
   <p>
