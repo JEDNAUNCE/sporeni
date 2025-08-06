@@ -334,6 +334,83 @@
   background-color: #a78b36;
 }
 
+.founder-message {
+  background-color: #fffaf0;
+  padding: 60px 20px;
+}
+
+.founder-message-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.founder-message-left {
+  text-align: center;
+}
+
+.founder-message-photo {
+  width: 180px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 12px;
+}
+
+.founder-message-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.founder-message-name span {
+  display: block;
+  font-size: 0.95rem;
+  color: #666;
+  font-weight: normal;
+}
+
+.founder-message-signature {
+  width: 160px;
+  height: auto;
+  opacity: 0.9;
+  margin: 10px auto;
+}
+
+.founder-message-phone {
+  font-size: 1rem;
+  color: #444;
+  margin-top: 8px;
+}
+
+.founder-message-right {
+  max-width: 600px;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #444;
+}
+
+@media (min-width: 768px) {
+  .founder-message-content {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .founder-message-left {
+    flex: 1;
+    align-items: center;
+  }
+
+  .founder-message-right {
+    flex: 2;
+  }
+}
 
 
 
@@ -424,6 +501,22 @@
   </div>
 </div>
 
+<div class="founder-message">
+  <div class="founder-message-content">
+    <div class="founder-message-left">
+      <img src="/image/VKJ.jpg" alt="Václav Ketner" class="founder-message-photo" />
+      <p class="founder-message-name">Václav Ketner<br><span>Zakladatel společnosti</span></p>
+      <img src="/image/signature.png" alt="Podpis Václava Ketnera" class="founder-message-signature" />
+      <p class="founder-message-phone">📞 +420 123 456 789</p>
+    </div>
+    <div class="founder-message-right">
+      <p>Drahé kovy jsou oborem, na který se specializujeme již řadu let.</p>
+      <p>Nejsme jen prodejci, ale obchodníci s pevnou pozicí na trhu, kteří drahé kovy také vykupují. Opíráme se o vlastní kapitál i silného partnera, což nám umožňuje jednat rychle a bez množstevních limitů.</p>
+      <p>Zakládáme si na osobním přístupu, férovosti a jasné komunikaci.</p>
+      <p>Pokud máte jakékoli otázky, neváhejte se obrátit přímo na mě.</p>
+    </div>
+  </div>
+</div>
 
 <div class="about-text">
   <p>
