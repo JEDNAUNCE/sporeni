@@ -417,6 +417,61 @@
   color: #8a6d3b;
 }
 }
+.product-info {
+  background-color: #fff;
+  padding: 60px 20px;
+}
+
+.product-info-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.product-info-left {
+  text-align: center;
+}
+
+.product-info-image {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.product-info-right {
+  max-width: 600px;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #444;
+}
+
+.product-info-right h2 {
+  color: #8a6d3b;
+  font-size: 1.6rem;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 768px) {
+  .product-info-content {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .product-info-left {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  .product-info-right {
+    flex: 2;
+  }
+}
 
 
 
@@ -527,16 +582,17 @@
 </div>
 
 
-  <div class="product-note">
-  <p>
-    Ve spoření nabízíme výhradně celosvětově uznávané produkty.<br>
-    Neomezujete se tak na úzký trh – vaše slitky i mince budou bez výhrad obchodovatelné po celém světě.<br>
-    Tyto produkty jsou běžně směnitelné za peníze během 24 hodin.
-  </p>
-  <p>
-    Veškeré produkty si lze zakoupit také na našem <a href="https://www.jednaunce.cz" target="_blank" rel="noopener noreferrer">e‑shopu</a>.<br>
-    Jako oficiální prodejci německých značek Leuchtturm a Lindner nabízíme široký výběr etuí, kazet a úložných boxů pro slitky i sběratelské mince. Dodáme tak vaší investici tu správnou váhu. 
-  </p>
+<div class="product-info">
+  <div class="product-info-content">
+    <div class="product-info-left">
+      <img src="/image/penezenka.jpg" alt="Peněženka s mincemi" class="product-info-image" />
+    </div>
+    <div class="product-info-right">
+      <h2>Nabízené produkty</h2>
+      <p>Ve spoření nabízíme výhradně celosvětově uznávané produkty. Neomezujete se tak na úzký trh – vaše slitky i mince budou bez výhrad obchodovatelné po celém světě. Tyto produkty jsou běžně směnitelné za peníze během 24 hodin.</p>
+      <p>Veškeré produkty si lze zakoupit také na našem e‑shopu. Jako oficiální prodejci německých značek Leuchtturm a Lindner nabízíme široký výběr etuí, kazet a úložných boxů pro slitky i sběratelské mince. Dodáme tak vaší investici tu správnou váhu.</p>
+    </div>
+  </div>
 </div>
 
 
