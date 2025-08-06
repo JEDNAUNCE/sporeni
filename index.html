@@ -474,14 +474,14 @@
   }
 }
 
-.saving-types-intro {
+.saving-types-section {
   background-color: #f1e3cc;
-  padding: 60px 20px 30px 20px;
+  padding: 60px 20px;
 }
 
 .saving-types-content {
   max-width: 900px;
-  margin: 0 auto;
+  margin: 0 auto 40px auto;
   text-align: center;
   color: #333;
   font-size: 1.05rem;
@@ -493,6 +493,47 @@
   font-size: 1.6rem;
   margin-bottom: 16px;
 }
+
+/* boxy se spořením */
+.saving-options {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  padding: 0 20px;
+}
+
+.saving-options .option {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  width: 300px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.saving-options .option:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.saving-options .option img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.saving-options .option h3 {
+  margin: 0;
+  padding: 16px;
+  font-size: 1.1rem;
+  background: #f6f6f6;
+  border-top: 1px solid #eee;
+}
+
 
 
 
@@ -615,25 +656,25 @@
   </div>
 </div>
 
-  <div class="saving-types-intro">
+<div class="saving-types-section">
   <div class="saving-types-content">
     <h2>Nabízíme dva typy spoření</h2>
     <p>Vyberte si mezi spořením do zlata a spořením do stříbra – oba způsoby vám umožní pravidelně investovat do fyzických kovů s celosvětovou směnitelností a stabilní hodnotou.</p>
     <p>Po rozkliknutí se dozvíte více o možnostech, výhodách a fungování každého z nich.</p>
     <p>Spoření přizpůsobíte sobě – žádné závazky, žádné skryté poplatky. Klikněte a zjistěte, co bude nejvíce vyhovovat právě vám.</p>
   </div>
+
+  <div class="saving-options">
+    <a class="option" href="sporeni-zlato.html">
+      <img src="image/uvodzlato.jpg" alt="Spoření do zlata" />
+      <h3>Spoření do zlata</h3>
+    </a>
+    <a class="option" href="sporeni-stribro.html">
+      <img src="image/uvodstribro.jpg" alt="Spoření do stříbra" />
+      <h3>Spoření do stříbra</h3>
+    </a>
+  </div>
 </div>
 
-
-<div class="options">
-  <a class="option" href="sporeni-zlato.html">
-    <img src="image/uvodzlato.jpg" alt="Spoření do zlata" />
-    <h3>Spoření do zlata</h3>
-  </a>
-  <a class="option" href="sporeni-stribro.html">
-    <img src="image/uvodstribro.jpg" alt="Spoření do stříbra" />
-    <h3>Spoření do stříbra</h3>
-  </a>
-</div>
 </body>
 </html>
