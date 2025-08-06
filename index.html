@@ -197,6 +197,37 @@
 .product-note a:hover {
   text-decoration: underline;
 }
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.hero-image img {
+  width: 100%;
+  max-width: 360px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+@media (min-width: 768px) {
+  .hero-content {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+  }
+
+  .hero-text {
+    max-width: 500px;
+    margin-right: 40px;
+  }
+
+  .hero-image img {
+    max-width: 400px;
+  }
+}
 
 
 
@@ -230,7 +261,10 @@
   <h1>Bezpečné spoření do fyzického zlata a stříbra</h1>
   <p>Trvalá hodnota. Tisíciletá tradice. Ochrana před inflací.</p>
 </div>
-
+<div class="hero-image">
+    <img src="/image/munze.jpg" alt="Zlaté slitky" />
+    </div>
+</div>
 <div class="benefits-section">
   <div class="benefits">
     <div class="benefit">
