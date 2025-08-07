@@ -171,10 +171,36 @@
       }
 
       .team-member {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-      }
+  width: 100%;
+  max-width: 100%;
+  padding: 24px 16px;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center;
+  background-color: #fffaf0;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin-bottom: 24px;
+}
+      .team-member img.contact-person-image {
+  width: 100px;
+  height: 130px;
+  object-fit: cover;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+      .team-member h3 {
+  font-size: 1.1rem;
+  margin: 0 0 6px 0;
+  color: #8a6d3b;
+}
+
+.team-member p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+  color: #444;
+}
 
       .contact-person-image {
         margin-bottom: 10px;
@@ -183,8 +209,9 @@
 
     @media (max-width: 767px) {
   .contact-section {
-    margin-top: 30px !important;
+    margin-top: 25px !important;
   }
+      
 }
 
   </style>
