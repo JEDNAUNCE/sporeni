@@ -1,174 +1,273 @@
-.contact-section,
-.team-section,
-.bank-section,
-.form-section {
-  max-width: 1200px;
-  margin: 60px auto;
-  padding: 0 20px;
-}
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kontakt | JEDNA UNCE – Spoření</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #fdfdfb;
+      color: #333;
+    }
 
-.contact-content {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-  align-items: center;
-}
+    header {
+      background: #252525;
+      color: white;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-.contact-left {
-  flex: 1 1 400px;
-  font-size: 1.05rem;
-  line-height: 1.6;
-  color: #444;
-}
+    nav a {
+      color: white;
+      margin: 0 12px;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
 
-.contact-left h2 {
-  color: #8a6d3b;
-  font-size: 1.6rem;
-  margin-bottom: 16px;
-}
+    nav a:hover {
+      text-decoration: underline;
+    }
 
-.contact-right {
-  flex: 1 1 300px;
-  text-align: center;
-}
+    .contact-section,
+    .team-section,
+    .bank-section,
+    .form-section {
+      max-width: 1200px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
 
-.contact-image {
-  width: 100%;
-  max-width: 400px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+    .contact-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      align-items: center;
+    }
 
-.team-section {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-  justify-content: center;
-}
+    .contact-left {
+      flex: 1 1 400px;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #444;
+    }
 
-.team-member {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  background: #fffaf0;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  flex: 1 1 400px;
-}
+    .contact-left h2 {
+      color: #8a6d3b;
+      font-size: 1.6rem;
+      margin-bottom: 16px;
+    }
 
-.contact-person-image {
-  width: 120px;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
+    .contact-right {
+      flex: 1 1 300px;
+      text-align: center;
+    }
 
-.team-member h3 {
-  margin-top: 0;
-  color: #8a6d3b;
-}
+    .contact-image {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
 
-.bank-section h2,
-.form-section h2 {
-  color: #8a6d3b;
-  margin-bottom: 20px;
-  font-size: 1.6rem;
-}
+    .team-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: center;
+    }
 
-.bank-columns {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 60px;
-  font-size: 1.05rem;
-  color: #444;
-}
+    .team-member {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      background: #fffaf0;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      flex: 1 1 400px;
+    }
 
-.bank-columns > div {
-  flex: 1 1 300px;
-}
+    .contact-person-image {
+      width: 120px;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
 
-/* RESPONSIVE */
-@media (max-width: 767px) {
-  .contact-content,
-  .team-section,
-  .bank-columns {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+    .team-member h3 {
+      margin-top: 0;
+      color: #8a6d3b;
+    }
 
-  .team-member {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
+    .bank-section h2,
+    .form-section h2 {
+      color: #8a6d3b;
+      margin-bottom: 20px;
+      font-size: 1.6rem;
+    }
 
-  .contact-person-image {
-    margin-bottom: 10px;
-  }
-}
+    .bank-columns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 60px;
+      font-size: 1.05rem;
+      color: #444;
+    }
 
+    .bank-columns > div {
+      flex: 1 1 300px;
+    }
 
+    .site-footer {
+      background-color: #252525;
+      color: #ddd;
+      padding: 40px 20px;
+      font-size: 0.95rem;
+    }
 
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
 
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+      margin-bottom: 16px;
+    }
 
-<section class="contact-section">
-  <div class="contact-content">
-    <div class="contact-left">
-      <h2>Sídlo společnosti</h2>
-      <p><strong>JEDNA UNCE s.r.o.</strong><br>
-         Vítkovická 3335/15<br>
-         702 00 Ostrava<br>
-         IČO: 173 34 586, DIČ: CZ17334586<br>
-         Jsme plátci DPH<br>
-         Zapsaná u Krajského soudu v Ostravě, sp. zn. C 89894</p>
-      <p><strong>Osobní schůzky pouze po předchozí domluvě.</strong><br>
-         Naše sídlo slouží jako výdejní a konzultační místo – bez skladu.</p>
-      <p>Objednávky dodáváme na místo do 24 hodin a domlouváme přesný termín převzetí.</p>
-    </div>
-    <div class="contact-right">
-      <img src="/image/sidlo.jpg" alt="Sídlo společnosti" class="contact-image" />
-    </div>
-  </div>
-</section>
+    .footer-links a {
+      color: #ddd;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
 
-<section class="team-section">
-  <div class="team-member">
-    <img src="/image/ketner.jpg" alt="Václav Ketner" class="contact-person-image" />
+    .footer-links a:hover {
+      color: #bfa440;
+    }
+
+    .footer-note {
+      color: #aaa;
+      font-size: 0.85rem;
+      margin-top: 10px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 767px) {
+      .contact-content,
+      .team-section,
+      .bank-columns {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .team-member {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .contact-person-image {
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
     <div>
-      <h3>Václav Ketner</h3>
-      <p>Objednávky, výkup, dotazy</p>
-      <p><strong>📞 +420 604 668 924</strong><br>
-         <strong>📧 obchod@jednaunce.cz</strong></p>
+      <a href="https://www.jednaunce.cz" target="_blank" rel="noopener noreferrer"
+         style="color:white; text-decoration:none; font-weight:bold;">
+         E‑shop JEDNA UNCE
+      </a>
     </div>
-  </div>
+    <nav>
+      <a href="/">O Jedné Unci</a>
+      <a href="/jak-funguje-sporeni.html">Jak funguje spoření</a>
+      <a href="/proc-zlato.html">Proč zlato</a>
+      <a href="/proc-stribro.html">Proč stříbro</a>
+      <a href="/kontakt.html">Kontakt</a>
+    </nav>
+  </header>
 
-  <div class="team-member">
-    <img src="/image/sindlerova.jpg" alt="Ivana Šindlerová" class="contact-person-image" />
-    <div>
-      <h3>Ivana Šindlerová</h3>
-      <p>Sklad a expedice</p>
+  <section class="contact-section">
+    <div class="contact-content">
+      <div class="contact-left">
+        <h2>Sídlo společnosti</h2>
+        <p><strong>JEDNA UNCE s.r.o.</strong><br>
+          Vítkovická 3335/15<br>
+          702 00 Ostrava<br>
+          IČO: 173 34 586, DIČ: CZ17334586<br>
+          Jsme plátci DPH<br>
+          Zapsaná u Krajského soudu v Ostravě, sp. zn. C 89894</p>
+        <p><strong>Osobní schůzky pouze po předchozí domluvě.</strong><br>
+          Naše sídlo slouží jako výdejní a konzultační místo – bez skladu.</p>
+        <p>Objednávky dodáváme na místo do 24 hodin a domlouváme přesný termín převzetí.</p>
+      </div>
+      <div class="contact-right">
+        <img src="/image/sidlo.jpg" alt="Sídlo společnosti" class="contact-image" />
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="bank-section">
-  <h2>Bankovní spojení</h2>
-  <div class="bank-columns">
-    <div>
-      <h4>Platby v CZK</h4>
-      <p>Číslo účtu: 2702264245 / 2010<br>
-         IBAN: CZ25 2010 0000 0027 0226 4245<br>
-         BIC (SWIFT): FIOBCZPPXXX</p>
+  <section class="team-section">
+    <div class="team-member">
+      <img src="/image/ketner.jpg" alt="Václav Ketner" class="contact-person-image" />
+      <div>
+        <h3>Václav Ketner</h3>
+        <p>Objednávky, výkup, dotazy</p>
+        <p><strong>📞 +420 604 668 924</strong><br>
+          <strong>📧 obchod@jednaunce.cz</strong></p>
+      </div>
     </div>
-    <div>
-      <h4>Platby v EUR</h4>
-      <p>Číslo účtu: 2702264261 / 2010<br>
-         IBAN: CZ78 2010 0000 0027 0226 4261<br>
-         BIC (SWIFT): FIOBCZPPXXX</p>
+
+    <div class="team-member">
+      <img src="/image/sindlerova.jpg" alt="Ivana Šindlerová" class="contact-person-image" />
+      <div>
+        <h3>Ivana Šindlerová</h3>
+        <p>Sklad a expedice</p>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
+  <section class="bank-section">
+    <h2>Bankovní spojení</h2>
+    <div class="bank-columns">
+      <div>
+        <h4>Platby v CZK</h4>
+        <p>Číslo účtu: 2702264245 / 2010<br>
+          IBAN: CZ25 2010 0000 0027 0226 4245<br>
+          BIC (SWIFT): FIOBCZPPXXX</p>
+      </div>
+      <div>
+        <h4>Platby v EUR</h4>
+        <p>Číslo účtu: 2702264261 / 2010<br>
+          IBAN: CZ78 2010 0000 0027 0226 4261<br>
+          BIC (SWIFT): FIOBCZPPXXX</p>
+      </div>
+    </div>
+  </section>
 
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="https://www.jednaunce.cz" target="_blank">E‑shop JEDNA UNCE</a>
+        <a href="/faq.html">Nejčastější dotazy</a>
+        <a href="/kontakt.html">Kontakty</a>
+      </div>
+      <p class="footer-note">© 2024 JEDNA UNCE s.r.o. – Fyzické spoření do zlata a stříbra</p>
+    </div>
+  </footer>
+
+</body>
+</html>
