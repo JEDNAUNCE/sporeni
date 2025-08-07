@@ -612,6 +612,53 @@
     padding-bottom: 30px !important;
   }
 }
+    /* Mobilní menu - výchozí stav */
+.menu-toggle {
+  display: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Základní styl pro odkazy */
+.menu-links {
+  display: flex;
+  gap: 12px;
+}
+
+/* Mobilní verze */
+@media (max-width: 767px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .menu-links {
+    display: none;
+    flex-direction: column;
+    background: #252525;
+    position: absolute;
+    top: 56px; /* pod hlavičku */
+    left: 0;
+    width: 100%;
+    padding: 16px 0;
+    z-index: 1000;
+  }
+
+  .menu-links a {
+    padding: 10px 20px;
+    color: white;
+    text-decoration: none;
+    display: block;
+  }
+
+  .menu-links a:hover {
+    background-color: #3a3a3a;
+  }
+
+  .menu-links.open {
+    display: flex;
+  }
+}
+
 
 
 
@@ -633,13 +680,17 @@
   </a>
 </div>
 
-    <nav>
-      <a href="#">O Jedné Unci</a>
-      <a href="#">Jak funguje spoření</a>
-      <a href="#">Proč zlato</a>
-      <a href="#">Proč stříbro</a>
-      <a href="#">Kontakt</a>
-    </nav>
+<nav>
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+  <div class="menu-links">
+    <a href="#">O Jedné Unci</a>
+    <a href="#">Jak funguje spoření</a>
+    <a href="#">Proč zlato</a>
+    <a href="#">Proč stříbro</a>
+    <a href="#">Kontakt</a>
+  </div>
+</nav>
+
   </header>
 
 <div class="hero">
@@ -766,6 +817,10 @@
     <p class="footer-note">© 2024 JEDNA UNCE s.r.o. – Fyzické spoření do zlata a stříbra</p>
   </div>
 </footer>
-
+<script>
+  function toggleMenu() {
+    document.querySelector('.menu-links').classList.toggle('open');
+  }
+</script>
 </body>
 </html>
