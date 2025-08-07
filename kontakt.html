@@ -170,37 +170,37 @@
         align-items: flex-start;
       }
 
-      .team-member {
-  width: 100%;
-  max-width: 100%;
-  padding: 24px 16px;
-  flex-direction: column !important;
-  align-items: center !important;
-  text-align: center;
-  background-color: #fffaf0;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  margin-bottom: 24px;
-}
-      .team-member img.contact-person-image {
-  width: 100px;
-  height: 130px;
-  object-fit: cover;
-  margin-bottom: 12px;
-  border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-      .team-member h3 {
-  font-size: 1.1rem;
-  margin: 0 0 6px 0;
-  color: #8a6d3b;
-}
+  .team-member {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    gap: 16px;
+    background: #fffaf0;
+    border-radius: 10px;
+    padding: 16px;
+    margin: 0 16px 24px 16px; /* krásné odsazení z obou stran */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  .team-member img.contact-person-image {
+    width: 100px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+  }
+  .team-member h3 {
+    margin: 0 0 6px 0;
+    font-size: 1rem;
+    color: #8a6d3b;
+  }
 
-.team-member p {
-  margin: 4px 0;
-  font-size: 0.95rem;
-  color: #444;
-}
+  .team-member p {
+    margin: 2px 0;
+    font-size: 0.95rem;
+    color: #444;
+  }
 
       .contact-person-image {
         margin-bottom: 10px;
